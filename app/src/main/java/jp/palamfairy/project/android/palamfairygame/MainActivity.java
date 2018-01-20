@@ -1,6 +1,7 @@
 package jp.palamfairy.project.android.palamfairygame;
 
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaActionSound;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -17,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,22 +39,28 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer mBgm;
     private MediaPlayer mOnara;
     private ImageView petImage;
+    private MediaPlayer OnigiriPlay;
     private Button foodItem;
     private Button handItem;
     private Button cleanItem;
     private boolean showItem;
     private boolean wantShow;
-    private int imagewidth;
-    private int imageheight;
+    private ToileRoop toileRoop;
+    private AnimationSet OnigiriSet;
+    private TranslateAnimation OnigiriTrans;
+    private AlphaAnimation OnigiriAlfa;
     //    private RelativeLayout mParentLayout;
 //    private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
     private Button toileA;
     private Button toileB;
     private Button toileC;
     private Button toileD;
+
+    private ImageView OnigiriView;
     private RelativeLayout relativelayout;
     private LinearLayout layout;
     private ImageView toileImg;
+
     //    Handler mhandler= new Handler();
     private int random;
     @Override
@@ -69,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         toileC.setVisibility(View.INVISIBLE);
         toileD.setVisibility(View.INVISIBLE);
 
+        toileRoop = new ToileRoop();
+
         foodItem = (Button)findViewById(R.id.foodItem);
         handItem = (Button)findViewById(R.id.handItem);
         cleanItem = (Button)findViewById(R.id.cleanItem);
@@ -83,6 +94,28 @@ public class MainActivity extends AppCompatActivity {
 //        setContentView(relativelayout);
 //        layout = new LinearLayout(getApplicationContext());
 
+//        ごはんアイテム
+        OnigiriView = (ImageView)findViewById(R.id.OnigiriView);
+        OnigiriView.setVisibility(View.INVISIBLE);
+        foodItem.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                OnigiriView.setVisibility(View.VISIBLE);
+                OnigiriSet = new AnimationSet(true);
+                OnigiriTrans = new TranslateAnimation(
+                        TranslateAnimation.RELATIVE_TO_SELF,0,
+                        TranslateAnimation.RELATIVE_TO_SELF,0,
+                        TranslateAnimation.RELATIVE_TO_SELF,0,
+                        TranslateAnimation.RELATIVE_TO_SELF,3
+                );
+                OnigiriSet.addAnimation(OnigiriTrans);
+
+                OnigiriSound();
+                OnigiriAlfa = new AlphaAnimation(1,0);
+                OnigiriSet.addAnimation(OnigiriAlfa);
+                OnigiriSet.setDuration(5000);
+                OnigiriView.startAnimation(OnigiriSet);
+            }
+        });
 //        ボタン
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -102,8 +135,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-
+    private void OnigiriSound(){
+        OnigiriPlay = new MediaPlayer();
+        OnigiriPlay.create(this,R.raw.onigiri);
+        OnigiriPlay.start();
     }
 
 
@@ -140,33 +177,38 @@ public class MainActivity extends AppCompatActivity {
     }
     private void toileSound(){
         mOnara = MediaPlayer.create(this,R.raw.onara);
-        mBgm.start();
+        mOnara.start();
     }
-    //
+
 //    ★
     private void toile(){
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
+                Random randomInt = new Random();
+                random = randomInt.nextInt(600000)+60000;
                 Log.d("hatena","実験");
 //                トイレを4回呼びたい。
-                for(int i = 1; i<=4;i++) {
-                    if(i == 1){
-                        toileSound();
-                        toileA.setVisibility(View.VISIBLE);
-                    }else if(i == 2){
-                        toileSound();
-                        toileB.setVisibility(View.VISIBLE);
-                    }else if(i == 3){
-                        toileSound();
-                        toileC.setVisibility(View.VISIBLE);
-                    }else if(i == 4){
-                        toileSound();
-                        toileD.setVisibility(View.VISIBLE);
-                    }
-                    toile();
+                if(toileRoop.roop == 1){
+                    toileSound();
+                    toileA.setVisibility(View.VISIBLE);
+                }else if(toileRoop.roop == 2){
+                    toileSound();
+                    toileB.setVisibility(View.VISIBLE);
+                }else if(toileRoop.roop == 3){
+                    toileSound();
+                    toileC.setVisibility(View.VISIBLE);
+                }else if(toileRoop.roop == 4){
+                    toileSound();
+                    toileD.setVisibility(View.VISIBLE);
+                }
+                toile();
+                toileRoop.roop +=1;
+                if(toileRoop.roop >4) {
+                    toileRoop.roop = 0;
                 }
             }
-        },1000);
+        },random);
     }
 }
+

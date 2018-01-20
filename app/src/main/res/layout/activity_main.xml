@@ -86,4 +86,12 @@
         android:layout_marginBottom="22dp"
         android:background="@drawable/unti" />
 
+    <ImageView
+        android:id="@+id/OnigiriView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignTop="@+id/fab"
+        android:layout_toEndOf="@+id/toileD"
+        app:srcCompat="@drawable/food" />
+
 </RelativeLayout>
