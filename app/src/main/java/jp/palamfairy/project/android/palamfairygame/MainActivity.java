@@ -112,10 +112,11 @@ public class MainActivity extends AppCompatActivity{
 //                OnigiriTrans.setDuration(2000);
 //                OnigiriView.startAnimation(OnigiriTrans);
 //              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
                 OnigiriAlfa = new AlphaAnimation(1,0);
                 OnigiriAlfa.setDuration(4000);
                 OnigiriView.startAnimation(OnigiriAlfa);
+                petImage.setVisibility(View.INVISIBLE);
+
                 dogSmile();
             }
         });
@@ -140,8 +141,9 @@ public class MainActivity extends AppCompatActivity{
         });
     }
     private void dogSmile(){
-        petImage.setVisibility(View.INVISIBLE);
+
         petFaceAnimeView = (ImageView)findViewById(R.id.petFaceAnime);
+        petFaceAnimeView.setVisibility(View.VISIBLE);
         petFaceAnimeView.setBackgroundResource(R.drawable.dogface_animation);
         dogSmileAnime = (AnimationDrawable)petFaceAnimeView.getBackground();
         dogSmileAnime.start();
@@ -149,16 +151,15 @@ public class MainActivity extends AppCompatActivity{
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run(){
-                petImage.setVisibility(View.VISIBLE);
                 petFaceAnimeView.setVisibility(View.INVISIBLE);
                dogSmileAnime.stop();
+               petImage.setVisibility(View.VISIBLE);
             }
         },3000);
     }
 
     private void OnigiriSound(){
-        OnigiriPlay = new MediaPlayer();
-        OnigiriPlay.create(this,R.raw.onigiri);
+        OnigiriPlay = MediaPlayer.create(this,R.raw.onigiri);
         OnigiriPlay.start();
     }
 
