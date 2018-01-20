@@ -1,5 +1,6 @@
 package jp.palamfairy.project.android.palamfairygame;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.media.Image;
 import android.media.MediaActionSound;
@@ -35,7 +36,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     private MediaPlayer mBgm;
     private MediaPlayer mOnara;
     private ImageView petImage;
@@ -43,12 +44,13 @@ public class MainActivity extends AppCompatActivity {
     private Button foodItem;
     private Button handItem;
     private Button cleanItem;
+    private AnimationDrawable dogSmileAnime;
     private boolean showItem;
     private boolean wantShow;
     private ToileRoop toileRoop;
-    private AnimationSet OnigiriSet;
-    private TranslateAnimation OnigiriTrans;
+//    private TranslateAnimation OnigiriTrans;
     private AlphaAnimation OnigiriAlfa;
+    private ImageView petFaceAnimeView;
     //    private RelativeLayout mParentLayout;
 //    private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
     private Button toileA;
@@ -99,21 +101,22 @@ public class MainActivity extends AppCompatActivity {
         OnigiriView.setVisibility(View.INVISIBLE);
         foodItem.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                OnigiriView.setVisibility(View.VISIBLE);
-                OnigiriSet = new AnimationSet(true);
-                OnigiriTrans = new TranslateAnimation(
-                        TranslateAnimation.RELATIVE_TO_SELF,0,
-                        TranslateAnimation.RELATIVE_TO_SELF,0,
-                        TranslateAnimation.RELATIVE_TO_SELF,0,
-                        TranslateAnimation.RELATIVE_TO_SELF,3
-                );
-                OnigiriSet.addAnimation(OnigiriTrans);
+//                ~~~~~~~~~~~おにぎり落下~~~~~~~
+//                OnigiriView.setVisibility(View.VISIBLE);
+//                OnigiriTrans = new TranslateAnimation(
+//                        TranslateAnimation.RELATIVE_TO_SELF,0,
+//                        TranslateAnimation.RELATIVE_TO_SELF,0,
+//                        TranslateAnimation.RELATIVE_TO_SELF,0,
+//                        TranslateAnimation.RELATIVE_TO_SELF,3
+//                );
+//                OnigiriTrans.setDuration(2000);
+//                OnigiriView.startAnimation(OnigiriTrans);
+//              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-                OnigiriSound();
                 OnigiriAlfa = new AlphaAnimation(1,0);
-                OnigiriSet.addAnimation(OnigiriAlfa);
-                OnigiriSet.setDuration(5000);
-                OnigiriView.startAnimation(OnigiriSet);
+                OnigiriAlfa.setDuration(4000);
+                OnigiriView.startAnimation(OnigiriAlfa);
+                dogSmile();
             }
         });
 //        ボタン
@@ -135,6 +138,22 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    private void dogSmile(){
+        petImage.setVisibility(View.INVISIBLE);
+        petFaceAnimeView = (ImageView)findViewById(R.id.petFaceAnime);
+        petFaceAnimeView.setBackgroundResource(R.drawable.dogface_animation);
+        dogSmileAnime = (AnimationDrawable)petFaceAnimeView.getBackground();
+        dogSmileAnime.start();
+        OnigiriSound();
+        new Handler().postDelayed(new Runnable(){
+            @Override
+            public void run(){
+                petImage.setVisibility(View.VISIBLE);
+                petFaceAnimeView.setVisibility(View.INVISIBLE);
+               dogSmileAnime.stop();
+            }
+        },3000);
     }
 
     private void OnigiriSound(){
