@@ -43,36 +43,32 @@ public class MainActivity extends AppCompatActivity {
     private boolean wantShow;
     private int imagewidth;
     private int imageheight;
-//    private RelativeLayout mParentLayout;
+    //    private RelativeLayout mParentLayout;
 //    private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
-//    private ImageView toileA;
-//    private ImageView toileB;
-//    private ImageView toileC;
-//    private ImageView toileD;
+    private Button toileA;
+    private Button toileB;
+    private Button toileC;
+    private Button toileD;
     private RelativeLayout relativelayout;
     private LinearLayout layout;
     private ImageView toileImg;
-//    Handler mhandler= new Handler();
+    //    Handler mhandler= new Handler();
     private int random;
-
-//    private Matrix matrix;
-//    private String roop;
-//    private PetSub petsub = new PetSub();
-//    private ArrayList<String> toileList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-////        トイレのビュー取得
-//        toileA = (ImageView)findViewById(R.id.toileA);
-//        toileB = (ImageView)findViewById(R.id.toileB);
-//        toileC = (ImageView)findViewById(R.id.toileC);
-//        toileD = (ImageView)findViewById(R.id.toileD);
-//        //        トイレの表示
-//        toileA.setVisibility(View.INVISIBLE);
-//        toileB.setVisibility(View.INVISIBLE);
-//        toileC.setVisibility(View.INVISIBLE);
-//        toileD.setVisibility(View.INVISIBLE);
+//        トイレのビュー取得
+        toileA = (Button)findViewById(R.id.toileA);
+        toileB = (Button)findViewById(R.id.toileB);
+        toileC = (Button)findViewById(R.id.toileC);
+        toileD = (Button)findViewById(R.id.toileD);
+        //        トイレの表示
+        toileA.setVisibility(View.INVISIBLE);
+        toileB.setVisibility(View.INVISIBLE);
+        toileC.setVisibility(View.INVISIBLE);
+        toileD.setVisibility(View.INVISIBLE);
+
         foodItem = (Button)findViewById(R.id.foodItem);
         handItem = (Button)findViewById(R.id.handItem);
         cleanItem = (Button)findViewById(R.id.cleanItem);
@@ -130,30 +126,6 @@ public class MainActivity extends AppCompatActivity {
         petImage.startAnimation(petMoveRight);
         toile();
     }
-//    private void petGrouMenu(){
-//
-//    }
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
     private void setShowItem(boolean isShow){
         showItem = isShow;
     }
@@ -170,84 +142,31 @@ public class MainActivity extends AppCompatActivity {
         mOnara = MediaPlayer.create(this,R.raw.onara);
         mBgm.start();
     }
-//
-//    private void setToileList(String value){
-////        mToileKey = key;
-//        mToileValue = value;
-//        toileList.add(mToileValue);
-//    }
-//    private ArrayList<String> getToileList(){
-//        return toileList;
-//    }
+    //
 //    ★
     private void toile(){
-//        Random randomInt = new Random();
-//         random = randomInt.nextInt(600000)+60000;
-//        Timer toileTime = new Timer();
-//        toileTime.schedule(new TimerTask(){
-//            @Override
-//            public void run(){
-//                toileImg = new ImageView(getApplicationContext());
-//                toileImg.setImageResource(R.drawable.unti);
-//                toileImg.setMaxHeight(90);
-//                toileImg.setMaxWidth(90);
-//                relativelayout.addView(toileImg);
-
-//                Handler mhandler= new Handler();
-                new Handler().postDelayed(new Runnable(){
-                    @Override
-                    public void run() {
-                        layout = new LinearLayout(getApplicationContext());
-                        Random gravityRand = new Random();
-                        int gravityInt =gravityRand.nextInt(500)+90;
-                        layout.setGravity(gravityInt);
-                        layout.setLayoutParams(new LinearLayout.LayoutParams(
-//                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                gravityInt,
-//                                LinearLayout.LayoutParams.MATCH_PARENT
-                                gravityInt
-                        ));
-//                        relativelayout.setLayoutParams(new LinearLayout.LayoutParams(
-//                                LinearLayout.LayoutParams.MATCH_PARENT,
-//                                LinearLayout.LayoutParams.MATCH_PARENT
-//                        ));
-                        setContentView(layout);
-//                        setContentView(relativelayout);
-                        toileImg = new ImageView(getApplicationContext());
-                        toileImg.setImageResource(R.drawable.unti);
-                        imagewidth = 90;
-                        imageheight= 90;
-                        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(imagewidth,imageheight);
-                        toileImg.setLayoutParams(layoutparams);
-                        layout.addView(toileImg);
-//                        relativelayout.addView(toileImg);
-
-//                        relativelayout.addView(layout);
-//                        toileImg.setMaxWidth(petImage.getWidth()/2);
-//                        toileImg.setMaxHeight(petImage.getHeight()/2);
-//                        ViewTreeObserver vto = toileImg.getViewTreeObserver();
-//                        vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-//
-//                            @Override
-//                            public void onGlobalLayout() {
-//                                ViewGroup.LayoutParams layoutparams = toileImg.getLayoutParams();
-//
-//                                layoutparams.height = 80;
-//                                layoutparams.width = 80;
-//                                toileImg.setLayoutParams(layoutparams);
-//                                relativelayout.addView(toileImg, layoutparams);
-//                            }
-//                        });
+        new Handler().postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                Log.d("hatena","実験");
+//                トイレを4回呼びたい。
+                for(int i = 1; i<=4;i++) {
+                    if(i == 1){
                         toileSound();
-                        toile();
+                        toileA.setVisibility(View.VISIBLE);
+                    }else if(i == 2){
+                        toileSound();
+                        toileB.setVisibility(View.VISIBLE);
+                    }else if(i == 3){
+                        toileSound();
+                        toileC.setVisibility(View.VISIBLE);
+                    }else if(i == 4){
+                        toileSound();
+                        toileD.setVisibility(View.VISIBLE);
                     }
-                },1000);
-//
-//            }
-//        },
-//                100
-//                ,
-//                100
-//        );
+                    toile();
+                }
+            }
+        },1000);
     }
 }

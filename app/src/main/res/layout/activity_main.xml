@@ -17,21 +17,6 @@
         android:layout_marginBottom="37dp"
         app:srcCompat="@drawable/pet" />
 
-    <!--<android.support.design.widget.AppBarLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:theme="@style/AppTheme.AppBarOverlay">-->
-
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="?attr/actionBarSize"-->
-    <!--android:background="?attr/colorPrimary"-->
-    <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
-
-    <!--</android.support.design.widget.AppBarLayout>-->
-
-    <!--<include layout="@layout/content_main" />-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -40,43 +25,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_dialog_email" />
-
-    <!--<ImageView-->
-    <!--android:id="@+id/toileA"-->
-    <!--android:layout_width="60dp"-->
-    <!--android:layout_height="60dp"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_alignStart="@+id/fab"-->
-    <!--android:layout_marginBottom="21dp"-->
-    <!--android:layout_marginStart="24dp"-->
-    <!--app:srcCompat="@drawable/unti" />-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/toileB"-->
-    <!--android:layout_width="90dp"-->
-    <!--android:layout_height="90dp"-->
-    <!--android:layout_alignBottom="@+id/petViewImage"-->
-    <!--android:layout_alignParentEnd="true"-->
-    <!--android:layout_marginEnd="16dp"-->
-    <!--app:srcCompat="@drawable/unti" />-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/toileC"-->
-    <!--android:layout_width="70dp"-->
-    <!--android:layout_height="70dp"-->
-    <!--android:layout_above="@+id/toileB"-->
-    <!--android:layout_marginBottom="14dp"-->
-    <!--android:layout_toStartOf="@+id/petViewImage"-->
-    <!--app:srcCompat="@drawable/unti" />-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/toileD"-->
-    <!--android:layout_width="70dp"-->
-    <!--android:layout_height="70dp"-->
-    <!--android:layout_above="@+id/toileB"-->
-    <!--android:layout_alignStart="@+id/toileB"-->
-    <!--android:layout_marginBottom="41dp"-->
-    <!--app:srcCompat="@drawable/unti" />-->
 
     <Button
         android:id="@+id/foodItem"
@@ -101,5 +49,41 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/foodItem"
         android:background="@drawable/clean_item" />
+
+    <Button
+        android:id="@+id/toileA"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="279dp"
+        android:layout_marginTop="473dp"
+        android:background="@drawable/unti" />
+
+    <Button
+        android:id="@+id/toileB"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_above="@+id/petViewImage"
+        android:layout_marginEnd="13dp"
+        android:layout_toStartOf="@+id/petViewImage"
+        android:background="@drawable/unti" />
+
+    <Button
+        android:id="@+id/toileC"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_above="@+id/petViewImage"
+        android:layout_toEndOf="@+id/petViewImage"
+        android:background="@drawable/unti" />
+
+    <Button
+        android:id="@+id/toileD"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignEnd="@+id/toileB"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="22dp"
+        android:background="@drawable/unti" />
 
 </RelativeLayout>
