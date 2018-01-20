@@ -11,13 +11,19 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.os.Handler;
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -28,13 +34,27 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     private MediaPlayer mBgm;
+    private MediaPlayer mOnara;
     private ImageView petImage;
+    private Button foodItem;
+    private Button handItem;
+    private Button cleanItem;
+    private boolean showItem;
+    private boolean wantShow;
+    private int imagewidth;
+    private int imageheight;
+//    private RelativeLayout mParentLayout;
+//    private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
 //    private ImageView toileA;
 //    private ImageView toileB;
 //    private ImageView toileC;
 //    private ImageView toileD;
-    private LinearLayout linearlayout;
+    private RelativeLayout relativelayout;
+    private LinearLayout layout;
     private ImageView toileImg;
+//    Handler mhandler= new Handler();
+    private int random;
+
 //    private Matrix matrix;
 //    private String roop;
 //    private PetSub petsub = new PetSub();
@@ -53,22 +73,41 @@ public class MainActivity extends AppCompatActivity {
 //        toileB.setVisibility(View.INVISIBLE);
 //        toileC.setVisibility(View.INVISIBLE);
 //        toileD.setVisibility(View.INVISIBLE);
-
+        foodItem = (Button)findViewById(R.id.foodItem);
+        handItem = (Button)findViewById(R.id.handItem);
+        cleanItem = (Button)findViewById(R.id.cleanItem);
+        foodItem.setVisibility(View.INVISIBLE);
+        handItem.setVisibility(View.INVISIBLE);
+        cleanItem.setVisibility(View.INVISIBLE);
+        setShowItem(false);
 
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
-        linearlayout = new LinearLayout(this);
-        setContentView(linearlayout);
+        relativelayout = (RelativeLayout)findViewById(R.id.petcontainer);
+//        setContentView(relativelayout);
+//        layout = new LinearLayout(getApplicationContext());
 
 //        ボタン
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                wantShow = getShowItem();
+                if(wantShow) {
+                    foodItem.setVisibility(View.INVISIBLE);
+                    handItem.setVisibility(View.INVISIBLE);
+                    cleanItem.setVisibility(View.INVISIBLE);
+                    setShowItem(false);
+                }else{
+                    foodItem.setVisibility(View.VISIBLE);
+                    handItem.setVisibility(View.VISIBLE);
+                    cleanItem.setVisibility(View.VISIBLE);
+                    setShowItem(true);
+                }
             }
         });
+
+
     }
 
 
@@ -115,9 +154,20 @@ public class MainActivity extends AppCompatActivity {
 //
 //        return super.onOptionsItemSelected(item);
 //    }
-
+    private void setShowItem(boolean isShow){
+        showItem = isShow;
+    }
+    private boolean getShowItem(){
+        return showItem;
+    }
     public void sound() {
         mBgm = MediaPlayer.create(this, R.raw.bgm);
+        mBgm.setLooping(true);
+        mBgm.setVolume(0.3f,0.3f);
+        mBgm.start();
+    }
+    private void toileSound(){
+        mOnara = MediaPlayer.create(this,R.raw.onara);
         mBgm.start();
     }
 //
@@ -131,23 +181,73 @@ public class MainActivity extends AppCompatActivity {
 //    }
 //    ★
     private void toile(){
-        int random;
-        Random randomInt = new Random();
-        random = randomInt.nextInt(600000)+60000;
-        Timer toileTime = new Timer();
-        toileTime.schedule(new TimerTask(){
-            @Override
-            public void run(){
-                toileImg = new ImageView(getApplicationContext());
-                toileImg.setImageResource(R.drawable.unti);
-                toileImg.setMaxHeight(90);
-                toileImg.setMaxWidth(90);
-                linearlayout.addView(toileImg);
-            }
-        },
-                100
-                ,
-                100
-        );
+//        Random randomInt = new Random();
+//         random = randomInt.nextInt(600000)+60000;
+//        Timer toileTime = new Timer();
+//        toileTime.schedule(new TimerTask(){
+//            @Override
+//            public void run(){
+//                toileImg = new ImageView(getApplicationContext());
+//                toileImg.setImageResource(R.drawable.unti);
+//                toileImg.setMaxHeight(90);
+//                toileImg.setMaxWidth(90);
+//                relativelayout.addView(toileImg);
+
+//                Handler mhandler= new Handler();
+                new Handler().postDelayed(new Runnable(){
+                    @Override
+                    public void run() {
+                        layout = new LinearLayout(getApplicationContext());
+                        Random gravityRand = new Random();
+                        int gravityInt =gravityRand.nextInt(500)+90;
+                        layout.setGravity(gravityInt);
+                        layout.setLayoutParams(new LinearLayout.LayoutParams(
+//                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                gravityInt,
+//                                LinearLayout.LayoutParams.MATCH_PARENT
+                                gravityInt
+                        ));
+//                        relativelayout.setLayoutParams(new LinearLayout.LayoutParams(
+//                                LinearLayout.LayoutParams.MATCH_PARENT,
+//                                LinearLayout.LayoutParams.MATCH_PARENT
+//                        ));
+                        setContentView(layout);
+//                        setContentView(relativelayout);
+                        toileImg = new ImageView(getApplicationContext());
+                        toileImg.setImageResource(R.drawable.unti);
+                        imagewidth = 90;
+                        imageheight= 90;
+                        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(imagewidth,imageheight);
+                        toileImg.setLayoutParams(layoutparams);
+                        layout.addView(toileImg);
+//                        relativelayout.addView(toileImg);
+
+//                        relativelayout.addView(layout);
+//                        toileImg.setMaxWidth(petImage.getWidth()/2);
+//                        toileImg.setMaxHeight(petImage.getHeight()/2);
+//                        ViewTreeObserver vto = toileImg.getViewTreeObserver();
+//                        vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+//
+//                            @Override
+//                            public void onGlobalLayout() {
+//                                ViewGroup.LayoutParams layoutparams = toileImg.getLayoutParams();
+//
+//                                layoutparams.height = 80;
+//                                layoutparams.width = 80;
+//                                toileImg.setLayoutParams(layoutparams);
+//                                relativelayout.addView(toileImg, layoutparams);
+//                            }
+//                        });
+                        toileSound();
+                        toile();
+                    }
+                },1000);
+//
+//            }
+//        },
+//                100
+//                ,
+//                100
+//        );
     }
 }
