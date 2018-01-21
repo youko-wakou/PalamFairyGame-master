@@ -96,23 +96,23 @@ public class MainActivity extends AppCompatActivity{
         relativelayout = (RelativeLayout)findViewById(R.id.petcontainer);
 //        setContentView(relativelayout);
 //        layout = new LinearLayout(getApplicationContext());
+//      ~~~~~~~~~~~~~~~~~~~~~~~~~~トイレ掃除クリックイベント~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        cleanItem.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                toileA.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
 
+                    }
+                });
+            }
+        });
+//        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //        ごはんアイテム
         OnigiriView = (ImageView)findViewById(R.id.OnigiriView);
         OnigiriView.setVisibility(View.INVISIBLE);
         foodItem.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-//                ~~~~~~~~~~~おにぎり落下~~~~~~~
-//                OnigiriView.setVisibility(View.VISIBLE);
-//                OnigiriTrans = new TranslateAnimation(
-//                        TranslateAnimation.RELATIVE_TO_SELF,0,
-//                        TranslateAnimation.RELATIVE_TO_SELF,0,
-//                        TranslateAnimation.RELATIVE_TO_SELF,0,
-//                        TranslateAnimation.RELATIVE_TO_SELF,3
-//                );
-//                OnigiriTrans.setDuration(2000);
-//                OnigiriView.startAnimation(OnigiriTrans);
-//              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 OnigiriAlfa = new AlphaAnimation(1,0);
                 OnigiriAlfa.setDuration(4000);
                 OnigiriView.startAnimation(OnigiriAlfa);
@@ -140,7 +140,13 @@ public class MainActivity extends AppCompatActivity{
             }
         });
     }
+    private void OnigiriSound(){
+        OnigiriPlay = MediaPlayer.create(this,R.raw.onigiri);
+        OnigiriPlay.start();
+    }
+//    ~~~~~~~~~~~~~~~~~~~~~~~~犬が食べるアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void dogSmile(){
+        dogDefaultDelete();
         petFaceAnimeView = (ImageView)findViewById(R.id.petFaceAnime);
         petFaceAnimeView.setVisibility(View.VISIBLE);
         petFaceAnimeView.setBackgroundResource(R.drawable.dogface_animation);
@@ -150,19 +156,19 @@ public class MainActivity extends AppCompatActivity{
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run(){
+                petDefaultAnime();
                 petFaceAnimeView.setVisibility(View.INVISIBLE);
-               dogSmileAnime.stop();
+                dogSmileAnime.stop();
             }
         },3000);
     }
+//    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    private void OnigiriSound(){
-        OnigiriPlay = MediaPlayer.create(this,R.raw.onigiri);
-        OnigiriPlay.start();
-    }
 
+    //  ~~~~~~~~~~~~~~~~~~~~~~犬のデフォルトアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void petDefaultAnime(){
         petImage = (ImageView) findViewById(R.id.petViewImage);
+        petImage.setVisibility(View.VISIBLE);
         TranslateAnimation petMoveRight = new TranslateAnimation(
                 TranslateAnimation.RELATIVE_TO_SELF, -1,
                 TranslateAnimation.RELATIVE_TO_SELF, 1,
@@ -173,14 +179,34 @@ public class MainActivity extends AppCompatActivity{
         petMoveRight.setRepeatMode(Animation.REVERSE);
         petMoveRight.setRepeatCount(Animation.INFINITE);
         petImage.startAnimation(petMoveRight);
-        if(dogSmileAnime.isRunning()){
-            petMoveRight.cancel();
-            petImage.setVisibility(View.INVISIBLE);
-        }else{
-            petImage.setVisibility(View.VISIBLE);
-            petMoveRight.start();
-        }
+//        petAnimeRun();
     }
+    private void dogDefaultDelete(){
+        petImage = (ImageView) findViewById(R.id.petViewImage);
+        TranslateAnimation petMoveRight = new TranslateAnimation(
+                TranslateAnimation.RELATIVE_TO_SELF, 0,
+                TranslateAnimation.RELATIVE_TO_SELF, 0,
+                TranslateAnimation.RELATIVE_TO_SELF, 0,
+                TranslateAnimation.RELATIVE_TO_SELF, 0
+        );
+        petMoveRight.setDuration(0);
+        petMoveRight.setRepeatMode(0);
+        petMoveRight.setRepeatCount(0);
+        petImage.startAnimation(petMoveRight);
+        petImage.setVisibility(View.INVISIBLE);
+    }
+    private void petAnimeRun(){
+        if(dogSmileAnime != null) {
+            if (dogSmileAnime.isRunning()) {
+                dogDefaultDelete();
+            } else {
+                petDefaultAnime();
+            }
+        }
+
+    }
+//    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     @Override
     protected void onStart() {
         super.onStart();
