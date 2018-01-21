@@ -50,7 +50,10 @@ public class MainActivity extends AppCompatActivity{
     private boolean wantShow;
     private ToileRoop toileRoop;
     private MediaPlayer untiplayer;
-    private ImageView cleanUnti;
+    private ImageView cleanUntiA;
+    private ImageView cleanUntiB;
+    private ImageView cleanUntiC;
+    private ImageView cleanUntiD;
     private TranslateAnimation petMoveRight;
 //    private TranslateAnimation OnigiriTrans;
     private AlphaAnimation OnigiriAlfa;
@@ -62,10 +65,11 @@ public class MainActivity extends AppCompatActivity{
     private Button toileB;
     private Button toileC;
     private Button toileD;
-
+    private int mCount;
+    private int removeCount;
+    private ArrayList<Integer>ToileRoopList;
     private ImageView OnigiriView;
     private RelativeLayout relativelayout;
-    private LinearLayout layout;
     private ImageView toileImg;
 
     //    Handler mhandler= new Handler();
@@ -84,10 +88,16 @@ public class MainActivity extends AppCompatActivity{
         toileB.setVisibility(View.INVISIBLE);
         toileC.setVisibility(View.INVISIBLE);
         toileD.setVisibility(View.INVISIBLE);
-
-        cleanUnti = (ImageView)findViewById(R.id.cleanGoods);
-        cleanUnti.setVisibility(View.INVISIBLE);
-
+//======================掃除道具==================================================
+        cleanUntiA = (ImageView)findViewById(R.id.cleanGoodsA);
+        cleanUntiB = (ImageView)findViewById(R.id.cleanGoodsB);
+        cleanUntiC = (ImageView)findViewById(R.id.cleanGoodsC);
+        cleanUntiD = (ImageView)findViewById(R.id.cleanGoodsD);
+        cleanUntiA.setVisibility(View.INVISIBLE);
+        cleanUntiB.setVisibility(View.INVISIBLE);
+        cleanUntiC.setVisibility(View.INVISIBLE);
+        cleanUntiD.setVisibility(View.INVISIBLE);
+//============================================================================
 
         toileRoop = new ToileRoop();
 
@@ -111,32 +121,32 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onClick(View v){
                         toileA.setVisibility(View.INVISIBLE);
-                        int id = R.id.toileA;
-                        cleanToile(id);
+                        cleanToile(cleanUntiA);
+                        setroopCount(1);
                     }
                 });
                 toileB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         toileB.setVisibility(View.INVISIBLE);
-                        int id = R.id.toileB;
-                        cleanToile(id);
+                        cleanToile(cleanUntiB);
+                        setroopCount(1);
                     }
                 });
                 toileC.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
                         toileC.setVisibility(View.INVISIBLE);
-                        int id = R.id.toileC;
-                        cleanToile(id);
+                        cleanToile(cleanUntiC);
+                        setroopCount(1);
                     }
                 });
                 toileD.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
                         toileD.setVisibility(View.INVISIBLE);
-                        int id = R.id.toileD;
-                        cleanToile(id);
+                        cleanToile(cleanUntiD);
+                        setroopCount(1);
                     }
                 });
             }
@@ -174,25 +184,24 @@ public class MainActivity extends AppCompatActivity{
             }
         });
     }
+    private void setroopCount(int count){
+        mCount = count;
+        toile();
+    }
+    private int getroopCount(){
+        return mCount;
+    }
     private void OnigiriSound(){
         OnigiriPlay = MediaPlayer.create(this,R.raw.onigiri);
         OnigiriPlay.start();
     }
 
 //    ~~~~~~~~~~~~~~~~~~~~ウンチを掃除するアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    private void cleanToile(int id){
-        layout = new LinearLayout(this);
-        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        param.addRule(RelativeLayout.ALIGN_LEFT,id);
-        layout.addView(cleanUnti);
-        relativelayout.removeAllViews();
-        relativelayout.addView(layout,param);
+    private void cleanToile(ImageView image){
+        ImageView IMG = image;
         cleanGoodsAlpha = new AlphaAnimation(1,0);
         cleanGoodsAlpha.setDuration(2000);
-        cleanUnti.startAnimation(cleanGoodsAlpha);
+        IMG.startAnimation(cleanGoodsAlpha);
 
         untiplayer = MediaPlayer.create(this,R.raw.clean);
         untiplayer.start();
@@ -299,10 +308,31 @@ public class MainActivity extends AppCompatActivity{
                     toileSound();
                     toileD.setVisibility(View.VISIBLE);
                 }
-                toile();
+
                 toileRoop.roop +=1;
                 if(toileRoop.roop >4) {
                     toileRoop.roop = 0;
+                }
+
+                int count =0;
+                count +=1;
+                if(toileRoop.roop !=0) {
+                    if (ToileRoopList.size() <= 4) {
+                        toileRoop.setRoopList(count);
+                    }
+                }
+                ToileRoopList =toileRoop.getRoopList();
+
+                if(ToileRoopList.size() <=4){
+                    toile();
+                }
+
+                if(removeCount!=0) {
+                    removeCount = getroopCount();
+                    ToileRoopList.remove(removeCount);
+                    if(ToileRoopList.size() ==0){
+                        toile();
+                    }
                 }
             }
         },3000);

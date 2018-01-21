@@ -26,9 +26,11 @@
 
 
     <ImageView
-        android:id="@+id/cleanGoods"
+        android:id="@+id/cleanGoodsA"
         android:layout_width="130dp"
         android:layout_height="130dp"
+        android:layout_alignBottom="@+id/petViewImage"
+        android:layout_alignEnd="@+id/toileA"
         app:srcCompat="@drawable/clean" />
         <!--android:layout_above="@+id/petViewImage"-->
         <!--android:layout_alignEnd="@+id/toileC"-->
@@ -62,10 +64,9 @@
         android:id="@+id/toileA"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="279dp"
-        android:layout_marginTop="473dp"
+        android:layout_alignBottom="@+id/petViewImage"
+        android:layout_marginStart="32dp"
+        android:layout_toEndOf="@+id/petViewImage"
         android:background="@drawable/unti" />
 
     <Button
@@ -109,5 +110,30 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/menu_button" />
+
+    <ImageView
+        android:id="@+id/cleanGoodsB"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_alignBottom="@+id/cleanGoodsC"
+        android:layout_marginBottom="21dp"
+        android:layout_toStartOf="@+id/petViewImage"
+        app:srcCompat="@drawable/clean" />
+
+    <ImageView
+        android:id="@+id/cleanGoodsC"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_above="@+id/cleanGoodsA"
+        android:layout_alignEnd="@+id/toileC"
+        app:srcCompat="@drawable/clean" />
+
+    <ImageView
+        android:id="@+id/cleanGoodsD"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_alignBottom="@+id/petViewImage"
+        android:layout_alignEnd="@+id/OnigiriView"
+        app:srcCompat="@drawable/clean" />
 
 </RelativeLayout>
