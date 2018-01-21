@@ -45,13 +45,17 @@ public class MainActivity extends AppCompatActivity{
     private Button handItem;
     private Button cleanItem;
     private AnimationDrawable dogSmileAnime;
+    private AlphaAnimation cleanGoodsAlpha;
     private boolean showItem;
     private boolean wantShow;
     private ToileRoop toileRoop;
+    private MediaPlayer untiplayer;
+    private ImageView cleanUnti;
     private TranslateAnimation petMoveRight;
 //    private TranslateAnimation OnigiriTrans;
     private AlphaAnimation OnigiriAlfa;
     private ImageView petFaceAnimeView;
+//    private LinearLayout layoutClean;
     //    private RelativeLayout mParentLayout;
 //    private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
     private Button toileA;
@@ -81,6 +85,10 @@ public class MainActivity extends AppCompatActivity{
         toileC.setVisibility(View.INVISIBLE);
         toileD.setVisibility(View.INVISIBLE);
 
+        cleanUnti = (ImageView)findViewById(R.id.cleanGoods);
+        cleanUnti.setVisibility(View.INVISIBLE);
+
+
         toileRoop = new ToileRoop();
 
         foodItem = (Button)findViewById(R.id.foodItem);
@@ -102,7 +110,33 @@ public class MainActivity extends AppCompatActivity{
                 toileA.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
-
+                        toileA.setVisibility(View.INVISIBLE);
+                        int id = R.id.toileA;
+                        cleanToile(id);
+                    }
+                });
+                toileB.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        toileB.setVisibility(View.INVISIBLE);
+                        int id = R.id.toileB;
+                        cleanToile(id);
+                    }
+                });
+                toileC.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        toileC.setVisibility(View.INVISIBLE);
+                        int id = R.id.toileC;
+                        cleanToile(id);
+                    }
+                });
+                toileD.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        toileD.setVisibility(View.INVISIBLE);
+                        int id = R.id.toileD;
+                        cleanToile(id);
                     }
                 });
             }
@@ -121,7 +155,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 //        ボタン
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Button fab = (Button) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,6 +178,26 @@ public class MainActivity extends AppCompatActivity{
         OnigiriPlay = MediaPlayer.create(this,R.raw.onigiri);
         OnigiriPlay.start();
     }
+
+//    ~~~~~~~~~~~~~~~~~~~~ウンチを掃除するアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    private void cleanToile(int id){
+        layout = new LinearLayout(this);
+        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        param.addRule(RelativeLayout.ALIGN_LEFT,id);
+        layout.addView(cleanUnti);
+        relativelayout.removeAllViews();
+        relativelayout.addView(layout,param);
+        cleanGoodsAlpha = new AlphaAnimation(1,0);
+        cleanGoodsAlpha.setDuration(2000);
+        cleanUnti.startAnimation(cleanGoodsAlpha);
+
+        untiplayer = MediaPlayer.create(this,R.raw.clean);
+        untiplayer.start();
+    }
+//    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //    ~~~~~~~~~~~~~~~~~~~~~~~~犬が食べるアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void dogSmile(){
         dogDefaultDelete();
@@ -195,35 +249,14 @@ public class MainActivity extends AppCompatActivity{
         petImage.startAnimation(petMoveRight);
         petImage.setVisibility(View.INVISIBLE);
     }
-    private void petAnimeRun(){
-        if(dogSmileAnime != null) {
-            if (dogSmileAnime.isRunning()) {
-                dogDefaultDelete();
-            } else {
-                petDefaultAnime();
-            }
-        }
 
-    }
+//    }
 //    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     @Override
     protected void onStart() {
         super.onStart();
         sound();
-//        AnimationPet mAnimationPet = new AnimationPet();
-//        mAnimationPet.petSlide(petImage);
-//        petImage = (ImageView) findViewById(R.id.petViewImage);
-//        TranslateAnimation petMoveRight = new TranslateAnimation(
-//                TranslateAnimation.RELATIVE_TO_SELF, -1,
-//                TranslateAnimation.RELATIVE_TO_SELF, 1,
-//                TranslateAnimation.RELATIVE_TO_SELF, 0,
-//                TranslateAnimation.RELATIVE_TO_SELF, 0
-//        );
-//        petMoveRight.setDuration(5000);
-//        petMoveRight.setRepeatMode(Animation.REVERSE);
-//        petMoveRight.setRepeatCount(Animation.INFINITE);
-//        petImage.startAnimation(petMoveRight);
         petDefaultAnime();
         toile();
     }
@@ -272,7 +305,7 @@ public class MainActivity extends AppCompatActivity{
                     toileRoop.roop = 0;
                 }
             }
-        },random);
+        },3000);
     }
 }
 
