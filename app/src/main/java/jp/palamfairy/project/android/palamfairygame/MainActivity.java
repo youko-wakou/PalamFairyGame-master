@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity{
     private boolean showItem;
     private boolean wantShow;
     private ToileRoop toileRoop;
+    private TranslateAnimation petMoveRight;
 //    private TranslateAnimation OnigiriTrans;
     private AlphaAnimation OnigiriAlfa;
     private ImageView petFaceAnimeView;
@@ -115,8 +116,7 @@ public class MainActivity extends AppCompatActivity{
                 OnigiriAlfa = new AlphaAnimation(1,0);
                 OnigiriAlfa.setDuration(4000);
                 OnigiriView.startAnimation(OnigiriAlfa);
-                petImage.setVisibility(View.INVISIBLE);
-
+//                petImage.setVisibility(View.INVISIBLE);
                 dogSmile();
             }
         });
@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity{
         });
     }
     private void dogSmile(){
-
         petFaceAnimeView = (ImageView)findViewById(R.id.petFaceAnime);
         petFaceAnimeView.setVisibility(View.VISIBLE);
         petFaceAnimeView.setBackgroundResource(R.drawable.dogface_animation);
@@ -153,7 +152,6 @@ public class MainActivity extends AppCompatActivity{
             public void run(){
                 petFaceAnimeView.setVisibility(View.INVISIBLE);
                dogSmileAnime.stop();
-               petImage.setVisibility(View.VISIBLE);
             }
         },3000);
     }
@@ -163,13 +161,7 @@ public class MainActivity extends AppCompatActivity{
         OnigiriPlay.start();
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        sound();
-//        AnimationPet mAnimationPet = new AnimationPet();
-//        mAnimationPet.petSlide(petImage);
+    private void petDefaultAnime(){
         petImage = (ImageView) findViewById(R.id.petViewImage);
         TranslateAnimation petMoveRight = new TranslateAnimation(
                 TranslateAnimation.RELATIVE_TO_SELF, -1,
@@ -181,6 +173,32 @@ public class MainActivity extends AppCompatActivity{
         petMoveRight.setRepeatMode(Animation.REVERSE);
         petMoveRight.setRepeatCount(Animation.INFINITE);
         petImage.startAnimation(petMoveRight);
+        if(dogSmileAnime.isRunning()){
+            petMoveRight.cancel();
+            petImage.setVisibility(View.INVISIBLE);
+        }else{
+            petImage.setVisibility(View.VISIBLE);
+            petMoveRight.start();
+        }
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        sound();
+//        AnimationPet mAnimationPet = new AnimationPet();
+//        mAnimationPet.petSlide(petImage);
+//        petImage = (ImageView) findViewById(R.id.petViewImage);
+//        TranslateAnimation petMoveRight = new TranslateAnimation(
+//                TranslateAnimation.RELATIVE_TO_SELF, -1,
+//                TranslateAnimation.RELATIVE_TO_SELF, 1,
+//                TranslateAnimation.RELATIVE_TO_SELF, 0,
+//                TranslateAnimation.RELATIVE_TO_SELF, 0
+//        );
+//        petMoveRight.setDuration(5000);
+//        petMoveRight.setRepeatMode(Animation.REVERSE);
+//        petMoveRight.setRepeatCount(Animation.INFINITE);
+//        petImage.startAnimation(petMoveRight);
+        petDefaultAnime();
         toile();
     }
     private void setShowItem(boolean isShow){

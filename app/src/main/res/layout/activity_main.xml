@@ -96,8 +96,8 @@
         android:id="@+id/OnigiriView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_alignTop="@+id/fab"
-        android:layout_toEndOf="@+id/toileD"
+        android:layout_alignBottom="@+id/petViewImage"
+        android:layout_alignStart="@+id/toileB"
         app:srcCompat="@drawable/food" />
 
 </RelativeLayout>
