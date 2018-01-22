@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.opengl.Matrix;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.os.Handler;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity{
     private ImageView cleanUntiB;
     private ImageView cleanUntiC;
     private ImageView cleanUntiD;
+    private AnimationDrawable HandAnimeDrawable;
     private TranslateAnimation petMoveRight;
 //    private TranslateAnimation OnigiriTrans;
     private AlphaAnimation OnigiriAlfa;
@@ -71,6 +76,21 @@ public class MainActivity extends AppCompatActivity{
     private ImageView OnigiriView;
     private RelativeLayout relativelayout;
     private ImageView toileImg;
+    private ImageView petNadeView;
+    private ImageView handAnimeView;
+    private MediaPlayer petNaderuPlayer;
+    private ImageView commentBackView;
+    private TextView commentText;
+    private String[] talkText;
+    private int TalkCount;
+    private Random randomTalk;
+    private int SelectTalk;
+    private String talkString;
+    private Random randOutTalk;
+    private int randOutCount;
+    private AlphaAnimation commentAlphaAnimation;
+    private MediaPlayer selectPlayer;
+    private MediaPlayer commentPlayer;
 
     //    Handler mhandler= new Handler();
     private int random;
@@ -88,6 +108,21 @@ public class MainActivity extends AppCompatActivity{
         toileB.setVisibility(View.INVISIBLE);
         toileC.setVisibility(View.INVISIBLE);
         toileD.setVisibility(View.INVISIBLE);
+//        =========================おしゃべり配列設定================================================
+        commentBackView = (ImageView)findViewById(R.id.commentBG);
+        commentText = (TextView)findViewById(R.id.commentTEX);
+        commentBackView.setVisibility(View.INVISIBLE);
+        commentText.setVisibility(View.INVISIBLE);
+//        参照変数にしゃべる内容を入れておく
+        talkText = new String[]{
+                "今日もいっしょにあそぼうね！",
+                "なでなでして～～",
+                "おはよう！今日はどんなことがあったかな？" ,
+                "何か楽しいことあった？？",
+                "だいすき＞＜"
+        };
+        CommentOut();
+//        ====================================================================================
 //======================掃除道具==================================================
         cleanUntiA = (ImageView)findViewById(R.id.cleanGoodsA);
         cleanUntiB = (ImageView)findViewById(R.id.cleanGoodsB);
@@ -117,6 +152,7 @@ public class MainActivity extends AppCompatActivity{
 //      ~~~~~~~~~~~~~~~~~~~~~~~~~~トイレ掃除クリックイベント~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         cleanItem.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                selectSound();
                 toileA.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
@@ -152,11 +188,25 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 //        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        ======================なでなでクリックイベント===================================================================
+        petNadeView = (ImageView)findViewById(R.id.petHandSmile);
+        petNadeView.setVisibility(View.INVISIBLE);
+        handAnimeView = (ImageView)findViewById(R.id.handSlide);
+        handAnimeView.setVisibility(View.INVISIBLE);
+        handItem.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                selectSound();
+                dogDefaultDelete();
+                naderuAnime();
+            }
+        });
+//        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 //        ごはんアイテム
         OnigiriView = (ImageView)findViewById(R.id.OnigiriView);
         OnigiriView.setVisibility(View.INVISIBLE);
         foodItem.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                selectSound();
                 OnigiriAlfa = new AlphaAnimation(1,0);
                 OnigiriAlfa.setDuration(4000);
                 OnigiriView.startAnimation(OnigiriAlfa);
@@ -186,7 +236,14 @@ public class MainActivity extends AppCompatActivity{
     }
     private void setroopCount(int count){
         mCount = count;
-        toile();
+        if(mCount!=0) {
+//            removeCount = getroopCount();
+            ToileRoopList.remove(mCount);
+            if(ToileRoopList.size() ==1){
+                ToileRoopList.remove(0);
+                toile();
+            }
+        }
     }
     private int getroopCount(){
         return mCount;
@@ -195,6 +252,28 @@ public class MainActivity extends AppCompatActivity{
         OnigiriPlay = MediaPlayer.create(this,R.raw.onigiri);
         OnigiriPlay.start();
     }
+//    ===================なでなでアニメーション＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+    private void naderuAnime(){
+        petNadeView.setVisibility(View.VISIBLE);
+        handAnimeView.setVisibility(View.VISIBLE);
+        handAnimeView.setBackgroundResource(R.drawable.hand_animation);
+        HandAnimeDrawable =(AnimationDrawable)handAnimeView.getBackground();
+        HandAnimeDrawable.start();
+//        なでるときのサウンド
+        petNaderuPlayer = MediaPlayer.create(this,R.raw.hand);
+        petNaderuPlayer.start();
+//        3秒で止める
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run(){
+                HandAnimeDrawable.stop();
+                petDefaultAnime();
+                petNadeView.setVisibility(View.INVISIBLE);
+                handAnimeView.setVisibility(View.INVISIBLE);
+            }
+        },3000);
+    }
+//    ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 //    ~~~~~~~~~~~~~~~~~~~~ウンチを掃除するアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void cleanToile(ImageView image){
@@ -226,8 +305,28 @@ public class MainActivity extends AppCompatActivity{
         },3000);
     }
 //    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
+//===================コメントが表示されるアニメーション============================================
+    private void CommentOut(){
+        TalkCount =talkText.length;
+        randomTalk = new Random();
+        SelectTalk = randomTalk.nextInt(TalkCount);
+        talkString = talkText[SelectTalk];
+        commentText.setText(talkString);
+        randOutTalk = new Random();
+        randOutCount = randOutTalk.nextInt(300000)+1000;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                commentSound();
+                commentAlphaAnimation = new AlphaAnimation(1,0);
+                commentAlphaAnimation.setDuration(3000);
+                commentText.startAnimation(commentAlphaAnimation);
+                commentBackView.startAnimation(commentAlphaAnimation);
+                CommentOut();
+            }
+        },3000);
+    }
+//    =============================================================================================
     //  ~~~~~~~~~~~~~~~~~~~~~~犬のデフォルトアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void petDefaultAnime(){
         petImage = (ImageView) findViewById(R.id.petViewImage);
@@ -281,9 +380,22 @@ public class MainActivity extends AppCompatActivity{
         mBgm.setVolume(0.3f,0.3f);
         mBgm.start();
     }
+//    =======================トイレお片付けサウンド===================================================================
     private void toileSound(){
         mOnara = MediaPlayer.create(this,R.raw.onara);
         mOnara.start();
+    }
+//    =============================================================================================================
+//    =======================ボタン選択サウンド==================================================================
+    private void selectSound(){
+        selectPlayer =MediaPlayer.create(this,R.raw.select);
+        selectPlayer.start();
+    }
+//    ==========================================================================================================
+//    =================コメントサウンド========================================================================
+    private void commentSound(){
+        commentPlayer = MediaPlayer.create(this,R.raw.comment);
+        commentPlayer.start();
     }
 
 //    ★
@@ -316,24 +428,15 @@ public class MainActivity extends AppCompatActivity{
 
                 int count =0;
                 count +=1;
-                if(toileRoop.roop !=0) {
-                    if (ToileRoopList.size() <= 4) {
-                        toileRoop.setRoopList(count);
-                    }
-                }
                 ToileRoopList =toileRoop.getRoopList();
+                if(toileRoop.roop !=0) {
+                        toileRoop.setRoopList(count);
+                }
 
                 if(ToileRoopList.size() <=4){
                     toile();
                 }
 
-                if(removeCount!=0) {
-                    removeCount = getroopCount();
-                    ToileRoopList.remove(removeCount);
-                    if(ToileRoopList.size() ==0){
-                        toile();
-                    }
-                }
             }
         },3000);
     }
