@@ -1,5 +1,6 @@
 package jp.palamfairy.project.android.palamfairygame;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.media.Image;
@@ -30,6 +31,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.os.Handler;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.w3c.dom.Text;
 
@@ -92,6 +96,10 @@ public class MainActivity extends AppCompatActivity{
     private MediaPlayer selectPlayer;
     private MediaPlayer commentPlayer;
     private MediaPlayer menuOpenPlayer;
+    private Intent loginIntent;
+
+    private FirebaseUser userCheckFirebase;
+
 
     //    Handler mhandler= new Handler();
     private int random;
@@ -99,6 +107,13 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        =========================ログインしているか確認==============================================
+        userCheckFirebase = FirebaseAuth.getInstance().getCurrentUser();
+        if(userCheckFirebase == null){
+            loginIntent = new Intent(this,LoginActivity.class);
+            startActivity(loginIntent);
+        }
+//        =============================================================================================
 //        トイレのビュー取得
         toileA = (Button)findViewById(R.id.toileA);
         toileB = (Button)findViewById(R.id.toileB);

@@ -3,6 +3,7 @@ package jp.palamfairy.project.android.palamfairygame;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -41,15 +43,18 @@ public class LoginActivity extends AppCompatActivity {
     private AlertDialog.Builder loginErrorDialog;
     private boolean isCreateAccount = false;
     private InputMethodManager keyBoardShow;
+    private RelativeLayout loginViewLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 //        =========================レイアウトID取得=====================================================
         passwordEdit = (EditText) findViewById(R.id.password);
         emailEdit = (EditText) findViewById(R.id.email);
         loginButton = (Button) findViewById(R.id.login);
         signupButton = (Button) findViewById(R.id.sigin);
+        loginViewLayout = (RelativeLayout)findViewById(R.id.loginActivityView);
 //        ====================================================================================================
         Databasereference = FirebaseDatabase.getInstance().getReference();
         firebaseauth = FirebaseAuth.getInstance();
@@ -86,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(isCreateAccount){
                         loginProgressDialog.dismiss();
                     }else{
-                        Snackbar.make(v,"ログインに失敗しました",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(loginViewLayout,"ログインに失敗しました",Snackbar.LENGTH_LONG).show();
                         loginProgressDialog.dismiss();
                     }
                 }
@@ -128,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                keyBoardShow = (InputMethodManager)getSystemService(Context.INPUT_SERVICE);
+                keyBoardShow = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 keyBoardShow.hideSoftInputFromWindow(v.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
 
                 if(email.length() !=0 && password.length()>=6){

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFCE0D"
+    android:id="@+id/loginActivityView"
     tools:context="jp.palamfairy.project.android.palamfairygame.LoginActivity">
 
     <EditText
@@ -61,7 +62,6 @@
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
         android:layout_marginTop="38dp"
-        android:background="?android:attr/colorSwitchThumbNormal"
         android:text="Log In"
         android:textColor="@android:color/white"
         android:textSize="18sp"
