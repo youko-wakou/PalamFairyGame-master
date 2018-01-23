@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFCE0D"
-    android:id="@+id/loginActivityView"
+    android:id="@+id/entryActivityView"
     tools:context="jp.palamfairy.project.android.palamfairygame.UserPetEntryActivity">
 
     <EditText
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/petName"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="17dp"
         android:background="@android:color/holo_orange_dark"
         android:text="NEXT"
         android:textColor="@android:color/white"
@@ -53,5 +53,17 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         app:srcCompat="@drawable/pet" />
+
+    <TextView
+        android:id="@+id/petContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/nextButton"
+        android:layout_marginTop="12dp"
+        android:text="あなたと一緒に生活するペットです"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
