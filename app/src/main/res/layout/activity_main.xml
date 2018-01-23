@@ -32,12 +32,13 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="37dp"
         app:srcCompat="@drawable/pet_smile" />
+
     <ImageView
         android:id="@+id/cleanGoodsA"
         android:layout_width="130dp"
         android:layout_height="130dp"
         android:layout_alignBottom="@+id/petViewImage"
-        android:layout_alignEnd="@+id/toileA"
+        android:layout_toEndOf="@+id/petViewImage"
         app:srcCompat="@drawable/clean" />
         <!--android:layout_above="@+id/petViewImage"-->
         <!--android:layout_alignEnd="@+id/toileC"-->
@@ -71,9 +72,8 @@
         android:id="@+id/toileA"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_alignBottom="@+id/petViewImage"
-        android:layout_marginStart="32dp"
-        android:layout_toEndOf="@+id/petViewImage"
+        android:layout_below="@+id/handSlide"
+        android:layout_toEndOf="@+id/commentTEX"
         android:background="@drawable/unti" />
 
     <Button
@@ -97,9 +97,8 @@
         android:id="@+id/toileD"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignEnd="@+id/toileB"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="22dp"
+        android:layout_alignStart="@+id/OnigiriView"
+        android:layout_below="@+id/handSlide"
         android:background="@drawable/unti" />
 
     <ImageView
@@ -139,7 +138,7 @@
         android:id="@+id/cleanGoodsD"
         android:layout_width="130dp"
         android:layout_height="130dp"
-        android:layout_alignBottom="@+id/petViewImage"
+        android:layout_alignBottom="@+id/toileD"
         android:layout_alignEnd="@+id/OnigiriView"
         app:srcCompat="@drawable/clean" />
 

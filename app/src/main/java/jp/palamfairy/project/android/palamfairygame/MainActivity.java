@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity{
     private AlphaAnimation commentAlphaAnimation;
     private MediaPlayer selectPlayer;
     private MediaPlayer commentPlayer;
+    private MediaPlayer menuOpenPlayer;
 
     //    Handler mhandler= new Handler();
     private int random;
@@ -214,11 +215,12 @@ public class MainActivity extends AppCompatActivity{
                 dogSmile();
             }
         });
-//        ボタン
+//        ===============メニューオープンボタン=================================================
         Button fab = (Button) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                menuOpenSound();
                 wantShow = getShowItem();
                 if(wantShow) {
                     foodItem.setVisibility(View.INVISIBLE);
@@ -234,6 +236,8 @@ public class MainActivity extends AppCompatActivity{
             }
         });
     }
+//    ==========================================================================================================
+//    ==============ウンチを何個削除した確認、４つ消したらトイレ呼び出し========================================
     private void setroopCount(int count){
         mCount = count;
         if(mCount!=0) {
@@ -245,12 +249,9 @@ public class MainActivity extends AppCompatActivity{
             }
         }
     }
+//    ==========================================================================================================
     private int getroopCount(){
         return mCount;
-    }
-    private void OnigiriSound(){
-        OnigiriPlay = MediaPlayer.create(this,R.raw.onigiri);
-        OnigiriPlay.start();
     }
 //    ===================なでなでアニメーション＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
     private void naderuAnime(){
@@ -397,6 +398,20 @@ public class MainActivity extends AppCompatActivity{
         commentPlayer = MediaPlayer.create(this,R.raw.comment);
         commentPlayer.start();
     }
+//    ==========================================================================================================
+
+//    ========================メニューオープンサウンド========================================================
+    private void menuOpenSound(){
+        menuOpenPlayer = MediaPlayer.create(this,R.raw.menu);
+        menuOpenPlayer.start();
+    }
+//    =======================================================================================================
+//    ===========================おにぎりを食べるときのサウンド==============================================
+    private void OnigiriSound(){
+        OnigiriPlay = MediaPlayer.create(this,R.raw.onigiri);
+        OnigiriPlay.start();
+    }
+//    ============================================================================================================
 
 //    ★
     private void toile(){
