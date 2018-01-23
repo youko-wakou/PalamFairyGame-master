@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,6 +20,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 /**
  * Created by appu2 on 2018/01/22.
@@ -44,16 +45,19 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isCreateAccount = false;
     private InputMethodManager keyBoardShow;
     private RelativeLayout loginViewLayout;
+    private ArrayList<String> userInfoList;
+    private ArrayList<String> passArrayUserInfo;
+    private Intent NextPetInfoIntent;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
 //        =========================レイアウトID取得=====================================================
-        passwordEdit = (EditText) findViewById(R.id.password);
-        emailEdit = (EditText) findViewById(R.id.email);
+        passwordEdit = (EditText) findViewById(R.id.userName);
+        emailEdit = (EditText) findViewById(R.id.petName);
         loginButton = (Button) findViewById(R.id.login);
-        signupButton = (Button) findViewById(R.id.sigin);
+        signupButton = (Button) findViewById(R.id.nextButton);
         loginViewLayout = (RelativeLayout)findViewById(R.id.loginActivityView);
 //        ====================================================================================================
         Databasereference = FirebaseDatabase.getInstance().getReference();
@@ -89,11 +93,20 @@ public class LoginActivity extends AppCompatActivity {
                     user = firebaseauth.getCurrentUser();
                     userRef = Databasereference.child(Const.userPATH).child(user.getUid());
                     if(isCreateAccount){
-                        loginProgressDialog.dismiss();
+//                    ====================サインアップが完了したとき====================================================================
+                        passArrayUserInfo = passUserInfoArray();
+                        NextPetInfoIntent = new Intent(getApplicationContext(),UserPetEntryActivity.class);
+                        NextPetInfoIntent.putExtra("userProfArray",passArrayUserInfo);
+                        startActivity(NextPetInfoIntent);
+//                        ===============================================================================================================
+//                        loginProgressDialog.dismiss();
                     }else{
-                        Snackbar.make(loginViewLayout,"ログインに失敗しました",Snackbar.LENGTH_LONG).show();
-                        loginProgressDialog.dismiss();
+//                        =================アカウント作成済みだった場合firebaseからユーザー情報を引き出す================================
+//                        ============================================================================================================
                     }
+                }else{
+                    Snackbar.make(loginViewLayout,"ログインに失敗しました",Snackbar.LENGTH_LONG).show();
+                    loginProgressDialog.dismiss();
                 }
             }
         };
@@ -111,13 +124,17 @@ public class LoginActivity extends AppCompatActivity {
                 keyBoardShow = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 keyBoardShow.hideSoftInputFromWindow(v.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
 //                =====================================================================================================
-
+//                ================サインアップの時にアカウントへ登録される文字=======================================================
                 email = emailEdit.getText().toString();
                 password = passwordEdit.getText().toString();
+//                ========================================================================================================================
 //                ================================メールが未入力でない、パスワードが6文字以上=======================================================
                 if(email.length()!=0&&password.length()>=6){
+//                    ======================無事ユーザーパスワードとメールアドレスが登録できた場合============================
+//                    ★ここでIntentに渡すためにemailとpasswordを取得する★
+                    setUserInfo(email,password);
                     isCreateAccount = true;
-
+//                  =============ここでOnCompleteListener<AuthResult>()が呼び出される===============================
                     createAccount(email,password);
 //                    ~~~~~~~~~~~~~もしメールアドレスが未入力だったら~~~~~~~~~~~~~~~~~~~~~~~~~
                 }else if(email.length()==0) {
@@ -160,4 +177,14 @@ public class LoginActivity extends AppCompatActivity {
         firebaseauth.signInWithEmailAndPassword(email,password).addOnCompleteListener(LoginListener);
     }
 //    ========================================================================================================
+//    =======================ここでサインアップの時に取得できるemailとpasswordをintentに渡すために保管する=================================
+    private void setUserInfo(String email,String password){
+        userInfoList = new ArrayList<String>();
+        userInfoList.add(email);
+        userInfoList.add(password);
+    }
+    private ArrayList<String> passUserInfoArray(){
+        return userInfoList;
+    }
+//    =======================================================================================================================================
 }
