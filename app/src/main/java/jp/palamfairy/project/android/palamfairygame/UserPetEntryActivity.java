@@ -1,5 +1,6 @@
 package jp.palamfairy.project.android.palamfairygame;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
@@ -17,6 +18,8 @@ public class UserPetEntryActivity extends AppCompatActivity {
     private ArrayList<String> userProfArray;
     private TranslateAnimation dogJumpTransAnime;
     private ImageView dogJumpAnimeView;
+    private MediaPlayer entryBgmPlayer;
+
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -30,6 +33,8 @@ public class UserPetEntryActivity extends AppCompatActivity {
 //        ================================================================================================================
 //        ★アニメーション呼び出し★
         dogJumpAnime();
+        entryBgm();
+        setTitle("スタート");
     }
 //    ===========犬がジャンプするアニメーション==========================================================
     private void dogJumpAnime(){
@@ -45,4 +50,12 @@ public class UserPetEntryActivity extends AppCompatActivity {
         dogJumpAnimeView.startAnimation(dogJumpTransAnime);
     }
 //    ====================================================================================================
+//        ==============================BGMの設定===============================================================
+    private void entryBgm(){
+        entryBgmPlayer = MediaPlayer.create(this,R.raw.entry);
+        entryBgmPlayer.setLooping(true);
+        entryBgmPlayer.setVolume(0.3f,0.3f);
+        entryBgmPlayer.start();
+    }
+//===============================================================================================================
 }
