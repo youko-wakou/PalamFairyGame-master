@@ -100,6 +100,12 @@ public class PetDefaultActivity extends AppCompatActivity {
     private Toolbar MenuToolbar;
     private Intent logoutIntent;
     private ProgressDialog userLogoutDialog;
+    private int levelHave;
+    private int levelAdd;
+    private  DatabaseReference levelRef;
+    private String levelAddString;
+    private String levelHaveString;
+    private DatabaseReference levelInfoRef;
     //    Handler mhandler= new Handler();
     private int random;
     @Override
@@ -116,8 +122,8 @@ public class PetDefaultActivity extends AppCompatActivity {
         toileB.setVisibility(View.INVISIBLE);
         toileC.setVisibility(View.INVISIBLE);
         toileD.setVisibility(View.INVISIBLE);
-        MenuToolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(MenuToolbar);
+//        MenuToolbar = (Toolbar)findViewById(R.id.toolbar);
+//        setSupportActionBar(MenuToolbar);
 //        ==========================表示名取得=================================================
         auth = FirebaseAuth.getInstance();
         databasereference = FirebaseDatabase.getInstance().getReference();
@@ -125,70 +131,17 @@ public class PetDefaultActivity extends AppCompatActivity {
         userRef = databasereference.child(Const.userPATH).child(user.getUid());
         userRef.addChildEventListener(userInfoListener);
 //============================================================================================
-//        ================プログレスダイアログ作成========================================================
+//        =======================レベル取得==================================================================
+        levelRef = databasereference.child(Const.levelupPATH).child(user.getUid()).child("levelResult");
+        levelRef.addChildEventListener(levelEventListener);
+
+        levelInfoRef = databasereference.child(Const.levelupPATH).child(user.getUid()).child("levelBase");
+        levelInfoRef.addChildEventListener(levelInfoEventListener);
+//        =================================================================================================
+// ==============================プログレスダイアログ作成========================================================
         userLogoutDialog = new ProgressDialog(this);
         userLogoutDialog.setMessage("ログアウトしています…");
-//        ================================================================================================
-
-//        userRef = databasereference.child(Const.userPATH).child(user.getUid());
-//        private ChildEventListener userInfoListener = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                HashMap getNameMap = (HashMap)dataSnapshot.getValue();
-//                petName = (String)getNameMap.get("petName");
-//                userName = (String)getNameMap.get("userName");
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-
-//        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                HashMap getNameMap = (HashMap)dataSnapshot.getValue();
-//                petName = (String)getNameMap.get("petName");
-//                userName = (String)getNameMap.get("userName");
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//        ======================================================================================
-//        =========================おしゃべり配列設定================================================
-        commentBackView = (ImageView)findViewById(R.id.commentBG);
-        commentText = (TextView)findViewById(R.id.commentTEX);
-        commentBackView.setVisibility(View.INVISIBLE);
-        commentText.setVisibility(View.INVISIBLE);
-//        参照変数にしゃべる内容を入れておく
-        talkText = new String[]{
-                "今日もいっしょにあそぼうね！",
-                String.format("%s をなでなでして～～",petName),
-                "おはよう！今日はどんなことがあったかな？" ,
-                "何か楽しいことあった？？",
-                String.format("%s だいすき＞＜",userName)
-        };
-        CommentOut();
-//        ====================================================================================
+//====================== ================================================================================================
 //======================掃除道具==================================================
         cleanUntiA = (ImageView)findViewById(R.id.cleanGoodsA);
         cleanUntiB = (ImageView)findViewById(R.id.cleanGoodsB);
@@ -225,6 +178,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                         toileA.setVisibility(View.INVISIBLE);
                         cleanToile(cleanUntiA);
                         setroopCount(1);
+                        levelPlus();
                     }
                 });
                 toileB.setOnClickListener(new View.OnClickListener() {
@@ -233,6 +187,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                         toileB.setVisibility(View.INVISIBLE);
                         cleanToile(cleanUntiB);
                         setroopCount(1);
+                        levelPlus();
                     }
                 });
                 toileC.setOnClickListener(new View.OnClickListener(){
@@ -241,6 +196,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                         toileC.setVisibility(View.INVISIBLE);
                         cleanToile(cleanUntiC);
                         setroopCount(1);
+                        levelPlus();
                     }
                 });
                 toileD.setOnClickListener(new View.OnClickListener(){
@@ -249,6 +205,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                         toileD.setVisibility(View.INVISIBLE);
                         cleanToile(cleanUntiD);
                         setroopCount(1);
+                        levelPlus();
                     }
                 });
             }
@@ -264,10 +221,11 @@ public class PetDefaultActivity extends AppCompatActivity {
                 selectSound();
                 dogDefaultDelete();
                 naderuAnime();
+                levelPlus();
             }
         });
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-//        ごはんアイテム
+//       ================================= ごはんアイテムクリックイベント==============================================
         OnigiriView = (ImageView)findViewById(R.id.OnigiriView);
         OnigiriView.setVisibility(View.INVISIBLE);
         foodItem.setOnClickListener(new View.OnClickListener(){
@@ -278,8 +236,10 @@ public class PetDefaultActivity extends AppCompatActivity {
                 OnigiriView.startAnimation(OnigiriAlfa);
 //                petImage.setVisibility(View.INVISIBLE);
                 dogSmile();
+                levelPlus();
             }
         });
+//        =================================================================================================================
 //        ===============メニューオープンボタン=================================================
         Button fab = (Button) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -309,6 +269,7 @@ public class PetDefaultActivity extends AppCompatActivity {
             HashMap getNameMap = (HashMap)dataSnapshot.getValue();
             petName = (String)getNameMap.get("petName");
             userName = (String)getNameMap.get("userName");
+            commentArrayCall();
         }
 
         @Override
@@ -332,6 +293,24 @@ public class PetDefaultActivity extends AppCompatActivity {
         }
     };
 //    ===============================================================================================================
+    private void commentArrayCall(){
+//        =========================おしゃべり配列設定================================================
+        commentBackView = (ImageView)findViewById(R.id.commentBG);
+        commentText = (TextView)findViewById(R.id.commentTEX);
+        commentBackView.setVisibility(View.INVISIBLE);
+        commentText.setVisibility(View.INVISIBLE);
+//        参照変数にしゃべる内容を入れておく
+        talkText = new String[]{
+                "今日もいっしょにあそぼうね！",
+                String.format("%s をなでなでして～～",petName),
+                "おはよう！今日はどんなことがあったかな？" ,
+                "何か楽しいことあった？？",
+                String.format("%s だいすき＞＜",userName)
+        };
+        CommentOut();
+//        ====================================================================================
+
+    }
 //    ================R.menu.logout_menu表示==========================================================================
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -345,6 +324,7 @@ public class PetDefaultActivity extends AppCompatActivity {
          if(id == R.id.logout_item){
              if(user !=null) {
                  auth.signOut();
+                 mediaPlayerStop();
                  Snackbar.make(relativelayout,"ログアウトしました",Snackbar.LENGTH_LONG).show();
                  userLogoutDialog.show();
                  logoutIntent = new Intent(this, LoginActivity.class);
@@ -357,6 +337,139 @@ public class PetDefaultActivity extends AppCompatActivity {
          return super.onOptionsItemSelected(item);
     }
 //    ==========================================================================================================================
+//    ==================================レベルデータベース===============================================================================
+    private ChildEventListener levelEventListener = new ChildEventListener() {
+    @Override
+    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//        HashMap levelMap = (HashMap)dataSnapshot.getValue();
+//        String levelNOW = (String)levelMap.get("levelNow");
+        String levelNOW = (String)dataSnapshot.getValue();
+        setlevelTake(Integer.parseInt(levelNOW));
+//        if(levelMap.get("levelMore")!=null) {
+//            String levelMORE = (String) levelMap.get("levelMore");
+//            levelAdd = Integer.parseInt(levelMORE);
+//        }else if(levelMap.get("levelNow") != null){
+//            String levelNOW = (String)levelMap.get("levelNow");
+//            levelHave = Integer.parseInt(levelNOW);
+//        }else if(levelMap.get("levelMore")==null){
+//            levelAdd = 0;
+//        }else if(levelMap.get("levelNow")==null){
+//            levelHave = 1;
+//        }
+    }
+
+    @Override
+    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+    }
+
+    @Override
+    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+    }
+
+    @Override
+    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
+    }
+};
+
+    private ChildEventListener levelInfoEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//            HashMap levelInfoMap = (HashMap)dataSnapshot.getValue();
+//            String levelMORE = (String)levelInfoMap.get("levelMore");
+            String levelMORE = (String)dataSnapshot.getValue();
+            setlevelTakeOut(Integer.parseInt(levelMORE));
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+//    ===================================================================================================================================
+    private void setlevelTake(int Have){
+        levelHave = Have;
+    }
+    private  void setlevelTakeOut(int Add){
+        levelAdd = Add;
+    }
+//=================レベルアップ（現在レベル１０までしか上がりません）======================================================================
+    private void Levelmanagement() {
+        HashMap<String,String> levelHaveMap = new HashMap<String,String>();
+        if(levelAdd <=10) {
+            levelHave += 1;
+        }
+        levelHaveString = String.valueOf(levelHave);
+        levelHaveMap.put("levelNow",levelAddString);
+        levelRef.setValue(levelHaveMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null){
+                    System.out.println("Data could not be saved"+ databaseError.getMessage());
+                }else{
+                    System.out.println("Data saved successfully");
+                }
+            }
+        });
+    }
+//        ============================================================================================
+//    ====================レベル加算（１０を超えたらまた０からやり直す）================================================================================
+    private void levelPlus(){
+        HashMap<String,String> levelAddMap = new HashMap<String,String>();
+        HashMap<String,String> levelInfoMap = new HashMap<String, String>();
+        if(levelAdd<=9) {
+            levelAdd += 1;
+            levelInfoMap.put("levelNow","1");
+        }else if(levelAdd == 10){
+            levelAdd = 0;
+            Levelmanagement();
+        }
+        levelAddString = String.valueOf(levelAdd);
+        levelAddMap.put("levelMore",levelAddString);
+        levelInfoRef.setValue(levelAddMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null){
+                    System.out.println("Data could not be saved"+ databaseError.getMessage());
+                }else{
+                    System.out.println("Data saved successfully");
+                }
+            }
+        });
+        levelRef.setValue(levelInfoMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null){
+                    System.out.println("Data could not be saved"+databaseError.getMessage());
+                }else{
+                    System.out.println("Data saved successfully");
+                }
+            }
+        });
+    }
+//    =============================================================================================================
     //    ==============ウンチを何個削除した確認、４つ消したらトイレ呼び出し========================================
     private void setroopCount(int count){
         mCount = count;
@@ -373,7 +486,7 @@ public class PetDefaultActivity extends AppCompatActivity {
     private int getroopCount(){
         return mCount;
     }
-    //    ===================なでなでアニメーション＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+//    ===================なでなでアニメーション＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
     private void naderuAnime(){
         petNadeView.setVisibility(View.VISIBLE);
         handAnimeView.setVisibility(View.VISIBLE);
@@ -495,12 +608,14 @@ public class PetDefaultActivity extends AppCompatActivity {
     private boolean getShowItem(){
         return showItem;
     }
+//    =======================BGM===============================================================================
     public void sound() {
         mBgm = MediaPlayer.create(this, R.raw.bgm);
         mBgm.setLooping(true);
         mBgm.setVolume(0.3f,0.3f);
         mBgm.start();
     }
+//    ===========================================================================================================
     //    =======================トイレお片付けサウンド===================================================================
     private void toileSound(){
         mOnara = MediaPlayer.create(this,R.raw.onara);
@@ -532,7 +647,13 @@ public class PetDefaultActivity extends AppCompatActivity {
         OnigiriPlay.start();
     }
 //    ============================================================================================================
-
+//====================intentの際にすべてのプレイヤーを止める=====================================================
+    private void mediaPlayerStop(){
+        commentPlayer.stop();
+        mOnara.stop();
+        mBgm.stop();
+    }
+//    ========================================================================================================
     //    ★
     private void toile(){
         new Handler().postDelayed(new Runnable(){

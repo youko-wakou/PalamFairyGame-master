@@ -6,4 +6,6 @@ package jp.palamfairy.project.android.palamfairygame;
 
 public class Const {
     public static final String userPATH = "users";
+    public static final String levelupPATH = "levelUP";
+    public static final String levelInfoPATH = "levelINFO";
 }

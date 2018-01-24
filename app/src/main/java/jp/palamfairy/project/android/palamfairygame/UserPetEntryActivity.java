@@ -1,6 +1,7 @@
 package jp.palamfairy.project.android.palamfairygame;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -15,6 +16,7 @@ import android.widget.RelativeLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -44,6 +46,7 @@ public class UserPetEntryActivity extends AppCompatActivity {
     private DatabaseReference databasereference;
     private ProgressDialog userEntryProgress;
     private MediaPlayer JumpPlayer;
+    private Intent EntryToStartIntent;
 
 
     protected void onCreate(Bundle savedInstanceState){
@@ -84,7 +87,19 @@ public class UserPetEntryActivity extends AppCompatActivity {
                     Map<String,String> userData = new HashMap<String,String>();
                     userData.put("userName",userName);
                     userData.put("petName",petName);
-                    userRef.push().setValue(userData,this);
+                    userRef.push().setValue(userData, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if(databaseError != null){
+                                System.out.println("Data could not be saved"+databaseError.getMessage());
+                            }else{
+                                System.out.println("Data saved successfully");
+                            }
+                        }
+                    });
+                    EntryToStartIntent = new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(EntryToStartIntent);
+
                     userEntryProgress.show();
 //                    ===================================================================================================
                 }else if(userName.length()==0){
@@ -105,7 +120,7 @@ public class UserPetEntryActivity extends AppCompatActivity {
                 TranslateAnimation.RELATIVE_TO_SELF,0,
                 TranslateAnimation.RELATIVE_TO_SELF,0,
                 TranslateAnimation.RELATIVE_TO_SELF,0,
-                TranslateAnimation.RELATIVE_TO_SELF,1
+                TranslateAnimation.RELATIVE_TO_SELF,-1
         );
         dogJumpTransAnime.setDuration(2000);
         dogJumpTransAnime.setRepeatMode(TranslateAnimation.RESTART);
@@ -125,6 +140,7 @@ public class UserPetEntryActivity extends AppCompatActivity {
 //=========ジャンプサウンド==========================================================================
     private void jumpSound(){
         JumpPlayer = MediaPlayer.create(this,R.raw.jump);
+        JumpPlayer.setLooping(true);
         JumpPlayer.start();
     }
 //    ===========================================================================================
