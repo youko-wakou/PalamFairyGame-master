@@ -1,12 +1,18 @@
 package jp.palamfairy.project.android.palamfairygame;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -18,8 +24,15 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -78,8 +91,15 @@ public class PetDefaultActivity extends AppCompatActivity {
     private MediaPlayer selectPlayer;
     private MediaPlayer commentPlayer;
     private MediaPlayer menuOpenPlayer;
-
-
+    private FirebaseUser user;
+    private FirebaseAuth auth;
+    private DatabaseReference userRef;
+    private DatabaseReference databasereference;
+    private String petName;
+    private String userName;
+    private Toolbar MenuToolbar;
+    private Intent logoutIntent;
+    private ProgressDialog userLogoutDialog;
     //    Handler mhandler= new Handler();
     private int random;
     @Override
@@ -96,6 +116,64 @@ public class PetDefaultActivity extends AppCompatActivity {
         toileB.setVisibility(View.INVISIBLE);
         toileC.setVisibility(View.INVISIBLE);
         toileD.setVisibility(View.INVISIBLE);
+        MenuToolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(MenuToolbar);
+//        ==========================表示名取得=================================================
+        auth = FirebaseAuth.getInstance();
+        databasereference = FirebaseDatabase.getInstance().getReference();
+        user = auth.getCurrentUser();
+        userRef = databasereference.child(Const.userPATH).child(user.getUid());
+        userRef.addChildEventListener(userInfoListener);
+//============================================================================================
+//        ================プログレスダイアログ作成========================================================
+        userLogoutDialog = new ProgressDialog(this);
+        userLogoutDialog.setMessage("ログアウトしています…");
+//        ================================================================================================
+
+//        userRef = databasereference.child(Const.userPATH).child(user.getUid());
+//        private ChildEventListener userInfoListener = new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                HashMap getNameMap = (HashMap)dataSnapshot.getValue();
+//                petName = (String)getNameMap.get("petName");
+//                userName = (String)getNameMap.get("userName");
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
+
+//        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                HashMap getNameMap = (HashMap)dataSnapshot.getValue();
+//                petName = (String)getNameMap.get("petName");
+//                userName = (String)getNameMap.get("userName");
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//        ======================================================================================
 //        =========================おしゃべり配列設定================================================
         commentBackView = (ImageView)findViewById(R.id.commentBG);
         commentText = (TextView)findViewById(R.id.commentTEX);
@@ -104,10 +182,10 @@ public class PetDefaultActivity extends AppCompatActivity {
 //        参照変数にしゃべる内容を入れておく
         talkText = new String[]{
                 "今日もいっしょにあそぼうね！",
-                "なでなでして～～",
+                String.format("%s をなでなでして～～",petName),
                 "おはよう！今日はどんなことがあったかな？" ,
                 "何か楽しいことあった？？",
-                "だいすき＞＜"
+                String.format("%s だいすき＞＜",userName)
         };
         CommentOut();
 //        ====================================================================================
@@ -224,7 +302,62 @@ public class PetDefaultActivity extends AppCompatActivity {
         });
     }
     //    ==========================================================================================================
-//    ==============ウンチを何個削除した確認、４つ消したらトイレ呼び出し========================================
+//        ==========================表示名取得リスナーonCreateで呼び出し=================================================
+    private ChildEventListener userInfoListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            HashMap getNameMap = (HashMap)dataSnapshot.getValue();
+            petName = (String)getNameMap.get("petName");
+            userName = (String)getNameMap.get("userName");
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+//    ===============================================================================================================
+//    ================R.menu.logout_menu表示==========================================================================
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.logout_menu,menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+         int id=item.getItemId();
+         if(id == R.id.logout_item){
+             if(user !=null) {
+                 auth.signOut();
+                 Snackbar.make(relativelayout,"ログアウトしました",Snackbar.LENGTH_LONG).show();
+                 userLogoutDialog.show();
+                 logoutIntent = new Intent(this, LoginActivity.class);
+                 startActivity(logoutIntent);
+             }else{
+                 Snackbar.make(relativelayout,"ログインしていません",Snackbar.LENGTH_LONG).show();
+             }
+             return true;
+         }
+         return super.onOptionsItemSelected(item);
+    }
+//    ==========================================================================================================================
+    //    ==============ウンチを何個削除した確認、４つ消したらトイレ呼び出し========================================
     private void setroopCount(int count){
         mCount = count;
         if(mCount!=0) {

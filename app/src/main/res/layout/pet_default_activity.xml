@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/petcontainer"
@@ -164,9 +165,19 @@
         android:layout_width="250dp"
         android:layout_height="80dp"
         android:layout_above="@+id/cleanGoodsC"
-        android:layout_toEndOf="@+id/fab"
+        android:layout_alignStart="@+id/toileB"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold" />
+
+    <!--<android.support.v7.widget.Toolbar-->
+        <!--android:id="@+id/menubar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_below="@+id/cleanGoodsB"-->
+        <!--android:background="?attr/colorPrimary"-->
+        <!--android:minHeight="?attr/actionBarSize"-->
+        <!--android:theme="?attr/actionBarTheme" />-->
 
 </RelativeLayout>
