@@ -121,6 +121,8 @@ public class PetDefaultActivity extends AppCompatActivity {
     private ImageView levelShowView9;
     private ImageView levelShowView10;
     private ImageView petIMG;
+    private Button transItemButton;
+    private boolean transIsOk;
     //    Handler mhandler= new Handler();
     private int random;
     @Override
@@ -170,6 +172,7 @@ public class PetDefaultActivity extends AppCompatActivity {
 
         toileRoop = new ToileRoop();
 //==================レベルビュー===============================================
+        transIsOk = false;
         levelTextView = (TextView)findViewById(R.id.levelText);
         levelbarView = (ImageView)findViewById(R.id.levelbar);
         levelBoxView = (ImageView)findViewById(R.id.level_box);
@@ -199,6 +202,9 @@ public class PetDefaultActivity extends AppCompatActivity {
         foodItem = (Button)findViewById(R.id.foodItem);
         handItem = (Button)findViewById(R.id.handItem);
         cleanItem = (Button)findViewById(R.id.cleanItem);
+        transItemButton = (Button)findViewById(R.id.transItem);
+
+        transItemButton.setVisibility(View.INVISIBLE);
         foodItem.setVisibility(View.INVISIBLE);
         handItem.setVisibility(View.INVISIBLE);
         cleanItem.setVisibility(View.INVISIBLE);
@@ -259,6 +265,11 @@ public class PetDefaultActivity extends AppCompatActivity {
         handAnimeView.setVisibility(View.INVISIBLE);
         handItem.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                if(transIsOk){
+                    petNadeView.setImageResource(R.drawable.hituzi_smile);
+                }else{
+                    petNadeView.setImageResource(R.drawable.pet_smile);
+                }
                 selectSound();
                 dogDefaultDelete();
                 naderuAnime();
@@ -266,6 +277,15 @@ public class PetDefaultActivity extends AppCompatActivity {
             }
         });
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+//        ==========返信クリックイベント====================================================================================
+        transItemButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                petImage.setImageResource(R.drawable.hituzi);
+                petDefaultAnime();
+                transIsOk = true;
+            }
+        });
+//        ===================================================================================================================
 //       ================================= ごはんアイテムクリックイベント==============================================
         OnigiriView = (ImageView)findViewById(R.id.OnigiriView);
         OnigiriView.setVisibility(View.INVISIBLE);
@@ -292,11 +312,17 @@ public class PetDefaultActivity extends AppCompatActivity {
                     foodItem.setVisibility(View.INVISIBLE);
                     handItem.setVisibility(View.INVISIBLE);
                     cleanItem.setVisibility(View.INVISIBLE);
+                    if(levelHave >=10) {
+                        transItemButton.setVisibility(View.INVISIBLE);
+                    }
                     setShowItem(false);
                 }else{
                     foodItem.setVisibility(View.VISIBLE);
                     handItem.setVisibility(View.VISIBLE);
                     cleanItem.setVisibility(View.VISIBLE);
+                    if(levelHave >=10) {
+                        transItemButton.setVisibility(View.VISIBLE);
+                    }
                     setShowItem(true);
                 }
             }
@@ -453,11 +479,12 @@ public class PetDefaultActivity extends AppCompatActivity {
 //    ===================================================================================================================================
     private void setlevelTake(int Have){
         levelHave = Have;
-        if(levelHave >=10){
-            setImagePet(true);
-        }else{
-            setImagePet(false);
-        }
+//        if(levelHave >=10){
+//            setImagePet(true);
+//        }else{
+//            setImagePet(false);
+//        }
+        setImagePet();
     }
     private  void setlevelTakeOut(int Add){
         levelAdd = Add;
@@ -484,12 +511,8 @@ public class PetDefaultActivity extends AppCompatActivity {
 //    }
 //        ============================================================================================
 //    ============================どうぶつ画像入れ替え=====================================================================
-    private void setImagePet(boolean isImage){
-        if(isImage) {
-            petImage.setImageResource(R.drawable.hituzi);
-        }else{
+    private void setImagePet(){
             petImage.setImageResource(R.drawable.pet);
-        }
     }
 //    ===============================================================================================================================
 //    ====================レベル加算（１０を超えたらまた０からやり直す）================================================================================
@@ -538,7 +561,7 @@ public class PetDefaultActivity extends AppCompatActivity {
     private void levelViewShow(){
         if(levelAdd ==1){
             levelShowView1.setVisibility(View.VISIBLE);
-//            ===================他の表示を切っておく===========================================================
+//============================================他の表示を切っておく===========================================================
             levelShowView2.setVisibility(View.INVISIBLE);
             levelShowView3.setVisibility(View.INVISIBLE);
             levelShowView4.setVisibility(View.INVISIBLE);
@@ -548,7 +571,7 @@ public class PetDefaultActivity extends AppCompatActivity {
             levelShowView8.setVisibility(View.INVISIBLE);
             levelShowView9.setVisibility(View.INVISIBLE);
             levelShowView10.setVisibility(View.INVISIBLE);
-//            ============================================================================================================
+// ===========================================================================================================================
         }else if(levelAdd==2){
             levelShowView1.setVisibility(View.VISIBLE);
             levelShowView2.setVisibility(View.VISIBLE);
@@ -615,7 +638,7 @@ public class PetDefaultActivity extends AppCompatActivity {
         }
     }
 //    ================================================================================================================
-    //    ==============ウンチを何個削除した確認、４つ消したらトイレ呼び出し========================================
+//    ==============ウンチを何個削除した確認、４つ消したらトイレ呼び出し========================================
     private void setroopCount(int count){
         mCount = count;
         if(mCount!=0) {
@@ -627,7 +650,7 @@ public class PetDefaultActivity extends AppCompatActivity {
             }
         }
     }
-    //    ==========================================================================================================
+//    ==========================================================================================================
     private int getroopCount(){
         return mCount;
     }
@@ -654,7 +677,7 @@ public class PetDefaultActivity extends AppCompatActivity {
     }
 //    ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
-    //    ~~~~~~~~~~~~~~~~~~~~ウンチを掃除するアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//    ~~~~~~~~~~~~~~~~~~~~ウンチを掃除するアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void cleanToile(ImageView image){
         ImageView IMG = image;
         cleanGoodsAlpha = new AlphaAnimation(1,0);
@@ -664,13 +687,17 @@ public class PetDefaultActivity extends AppCompatActivity {
         untiplayer = MediaPlayer.create(this,R.raw.clean);
         untiplayer.start();
     }
-    //    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //    ~~~~~~~~~~~~~~~~~~~~~~~~犬が食べるアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void dogSmile(){
         dogDefaultDelete();
         petFaceAnimeView = (ImageView)findViewById(R.id.petFaceAnime);
         petFaceAnimeView.setVisibility(View.VISIBLE);
-        petFaceAnimeView.setBackgroundResource(R.drawable.dogface_animation);
+        if(transIsOk){
+            petFaceAnimeView.setBackgroundResource(R.drawable.hituzi_smile_animation);
+        }else {
+            petFaceAnimeView.setBackgroundResource(R.drawable.dogface_animation);
+        }
         dogSmileAnime = (AnimationDrawable)petFaceAnimeView.getBackground();
         dogSmileAnime.start();
         OnigiriSound();
@@ -705,8 +732,8 @@ public class PetDefaultActivity extends AppCompatActivity {
             }
         },3000);
     }
-    //    =============================================================================================
-    //  ~~~~~~~~~~~~~~~~~~~~~~犬のデフォルトアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//    =============================================================================================
+//  ~~~~~~~~~~~~~~~~~~~~~~犬のデフォルトアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void petDefaultAnime(){
         petImage = (ImageView) findViewById(R.id.petViewImage);
 

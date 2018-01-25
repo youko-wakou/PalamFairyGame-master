@@ -282,12 +282,11 @@
 
     <Button
         android:id="@+id/transItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="160dp"
+        android:layout_height="80dp"
         android:layout_below="@+id/foodItem"
-        android:layout_toEndOf="@+id/levelText"
-        android:background="@drawable/hensin_item"
-        android:text="Button" />
+        android:layout_toStartOf="@+id/cleanItem"
+        android:background="@drawable/hensin_item" />
 
     <!--<android.support.v7.widget.Toolbar-->
         <!--android:id="@+id/menubar"-->
