@@ -288,6 +288,30 @@
         android:layout_toStartOf="@+id/cleanItem"
         android:background="@drawable/hensin_item" />
 
+    <ImageView
+        android:id="@+id/levelUP"
+        android:layout_width="250dp"
+        android:layout_height="100dp"
+        android:layout_above="@+id/petViewImage"
+        android:layout_toEndOf="@+id/toileD"
+        app:srcCompat="@drawable/level_up" />
+
+    <ImageView
+        android:id="@+id/plus"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/commentTEX"
+        android:layout_toEndOf="@+id/cleanGoodsD"
+        app:srcCompat="@drawable/plus" />
+
+    <Button
+        android:id="@+id/transItemBt"
+        android:layout_width="160dp"
+        android:layout_height="80dp"
+        android:layout_alignBottom="@+id/cleanItem"
+        android:layout_alignStart="@+id/foodItem"
+        android:background="@drawable/trans_bt_item" />
+
     <!--<android.support.v7.widget.Toolbar-->
         <!--android:id="@+id/menubar"-->
         <!--android:layout_width="match_parent"-->

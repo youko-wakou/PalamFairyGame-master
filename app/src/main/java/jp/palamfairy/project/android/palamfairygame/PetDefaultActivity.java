@@ -123,6 +123,14 @@ public class PetDefaultActivity extends AppCompatActivity {
     private ImageView petIMG;
     private Button transItemButton;
     private boolean transIsOk;
+    private AlphaAnimation levelUPAlpha;
+    private ImageView levelUPImage;
+    private MediaPlayer levelUPplayer;
+    private ImageView plusVewImage;
+    private AlphaAnimation PlusAnimeAlpha;
+    private MediaPlayer PlusLevelPlayer;
+    private MediaPlayer TransPlayer;
+    private Button transReturnButton;
     //    Handler mhandler= new Handler();
     private int random;
     @Override
@@ -176,6 +184,13 @@ public class PetDefaultActivity extends AppCompatActivity {
         levelTextView = (TextView)findViewById(R.id.levelText);
         levelbarView = (ImageView)findViewById(R.id.levelbar);
         levelBoxView = (ImageView)findViewById(R.id.level_box);
+        levelUPImage = (ImageView)findViewById(R.id.levelUP);
+        levelUPImage.setVisibility(View.INVISIBLE);
+        plusVewImage = (ImageView)findViewById(R.id.plus);
+        plusVewImage.setVisibility(View.INVISIBLE);
+        transReturnButton = (Button)findViewById(R.id.transItemBt);
+        transReturnButton.setVisibility(View.INVISIBLE);
+
 
         levelShowView1 = (ImageView)findViewById(R.id.level_amount1);
         levelShowView2 = (ImageView)findViewById(R.id.level_amount2);
@@ -280,9 +295,18 @@ public class PetDefaultActivity extends AppCompatActivity {
 //        ==========返信クリックイベント====================================================================================
         transItemButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                petImage.setImageResource(R.drawable.hituzi);
+                if(transIsOk){
+                    transIsOk = false;
+                    petImage.setImageResource(R.drawable.pet);
+                    petDefaultAnime();
+                }else {
+                    petImage.setImageResource(R.drawable.hituzi);
+                    petDefaultAnime();
+                    transIsOk = true;
+                }
                 petDefaultAnime();
-                transIsOk = true;
+                transSound();
+
             }
         });
 //        ===================================================================================================================
@@ -321,7 +345,13 @@ public class PetDefaultActivity extends AppCompatActivity {
                     handItem.setVisibility(View.VISIBLE);
                     cleanItem.setVisibility(View.VISIBLE);
                     if(levelHave >=10) {
-                        transItemButton.setVisibility(View.VISIBLE);
+                        if(transIsOk){
+                            transReturnButton.setVisibility(View.VISIBLE);
+                            transItemButton.setVisibility(View.INVISIBLE);
+                        }else {
+                            transReturnButton.setVisibility(View.INVISIBLE);
+                            transItemButton.setVisibility(View.VISIBLE);
+                        }
                     }
                     setShowItem(true);
                 }
@@ -412,7 +442,6 @@ public class PetDefaultActivity extends AppCompatActivity {
 //        String levelNOW = (String)levelMap.get("levelNow");
         String levelNOW = (String)dataSnapshot.getValue();
         setlevelTake(Integer.parseInt(levelNOW));
-        levelTextView.setText(levelNOW);
 //        if(levelMap.get("levelMore")!=null) {
 //            String levelMORE = (String) levelMap.get("levelMore");
 //            levelAdd = Integer.parseInt(levelMORE);
@@ -479,11 +508,14 @@ public class PetDefaultActivity extends AppCompatActivity {
 //    ===================================================================================================================================
     private void setlevelTake(int Have){
         levelHave = Have;
+        String levelHaveString = String.valueOf(levelHave);
+        levelTextView.setText(levelHaveString);
 //        if(levelHave >=10){
 //            setImagePet(true);
 //        }else{
 //            setImagePet(false);
 //        }
+//        levelTextView.setText(levelHave);
         setImagePet();
     }
     private  void setlevelTakeOut(int Add){
@@ -523,6 +555,7 @@ public class PetDefaultActivity extends AppCompatActivity {
             levelAdd += 1;
             levelViewShow();
             levelInfoMap.put("levelNow","1");
+            levelAddAnime();
         }else if(levelAdd == 10){
             levelAdd = 1;
             levelViewShow();
@@ -530,6 +563,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                 levelHave += 1;
                 levelInfoMap.put("levelNow", String.valueOf(levelHave));
                 levelTextView.setText(String.valueOf(levelHave));
+                levelUPAnime();
 //            Levelmanagement();
             }
         }
@@ -676,7 +710,15 @@ public class PetDefaultActivity extends AppCompatActivity {
         },3000);
     }
 //    ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-
+//========================レベルアップアニメーション=================================================================
+    private void levelUPAnime(){
+        levelUPImage = (ImageView)findViewById(R.id.levelUP);
+        levelUPAlpha = new AlphaAnimation(1,0);
+        levelUPAlpha.setDuration(3000);
+        levelUPImage.startAnimation(levelUPAlpha);
+        levelUPsound();
+    }
+//    ==============================================================================================================
 //    ~~~~~~~~~~~~~~~~~~~~ウンチを掃除するアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void cleanToile(ImageView image){
         ImageView IMG = image;
@@ -688,6 +730,14 @@ public class PetDefaultActivity extends AppCompatActivity {
         untiplayer.start();
     }
 //    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//    ======================================レベル経過アニメーション====================================================
+    private void levelAddAnime(){
+        PlusAnimeAlpha = new AlphaAnimation(0,1);
+        PlusAnimeAlpha.setDuration(2000);
+        plusVewImage.startAnimation(PlusAnimeAlpha);
+        plusLevelSound();
+    }
+//    =====================================================================================================================
 //    ~~~~~~~~~~~~~~~~~~~~~~~~犬が食べるアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void dogSmile(){
         dogDefaultDelete();
@@ -788,12 +838,24 @@ public class PetDefaultActivity extends AppCompatActivity {
         mBgm.start();
     }
 //    ===========================================================================================================
+//    ====================================レベルアップサウンド===============================================
+    private void levelUPsound(){
+        levelUPplayer = MediaPlayer.create(this,R.raw.level);
+        levelUPplayer.start();
+    }
+//    ===========================================================================================================
     //    =======================トイレお片付けサウンド===================================================================
     private void toileSound(){
         mOnara = MediaPlayer.create(this,R.raw.onara);
         mOnara.start();
     }
     //    =============================================================================================================
+//    ==========================トランスサウンド=======================================================================
+    private void transSound(){
+        TransPlayer = MediaPlayer.create(this,R.raw.trans);
+        TransPlayer.start();
+    }
+//    ===========================================================================================================
 //    =======================ボタン選択サウンド==================================================================
     private void selectSound(){
         selectPlayer =MediaPlayer.create(this,R.raw.select);
@@ -806,6 +868,10 @@ public class PetDefaultActivity extends AppCompatActivity {
         commentPlayer.start();
     }
 //    ==========================================================================================================
+    private void plusLevelSound(){
+        PlusLevelPlayer = MediaPlayer.create(this,R.raw.level_add);
+        PlusLevelPlayer.start();
+    }
 
     //    ========================メニューオープンサウンド========================================================
     private void menuOpenSound(){
