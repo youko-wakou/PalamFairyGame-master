@@ -3,6 +3,7 @@ package jp.palamfairy.project.android.palamfairygame;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -106,6 +107,20 @@ public class PetDefaultActivity extends AppCompatActivity {
     private String levelAddString;
     private String levelHaveString;
     private DatabaseReference levelInfoRef;
+    private TextView levelTextView;
+    private ImageView levelbarView;
+    private ImageView levelBoxView;
+    private ImageView levelShowView1;
+    private ImageView levelShowView2;
+    private ImageView levelShowView3;
+    private ImageView levelShowView4;
+    private ImageView levelShowView5;
+    private ImageView levelShowView6;
+    private ImageView levelShowView7;
+    private ImageView levelShowView8;
+    private ImageView levelShowView9;
+    private ImageView levelShowView10;
+    private ImageView petIMG;
     //    Handler mhandler= new Handler();
     private int random;
     @Override
@@ -154,7 +169,33 @@ public class PetDefaultActivity extends AppCompatActivity {
 //============================================================================
 
         toileRoop = new ToileRoop();
+//==================レベルビュー===============================================
+        levelTextView = (TextView)findViewById(R.id.levelText);
+        levelbarView = (ImageView)findViewById(R.id.levelbar);
+        levelBoxView = (ImageView)findViewById(R.id.level_box);
 
+        levelShowView1 = (ImageView)findViewById(R.id.level_amount1);
+        levelShowView2 = (ImageView)findViewById(R.id.level_amount2);
+        levelShowView3 = (ImageView)findViewById(R.id.level_amount3);
+        levelShowView4 = (ImageView)findViewById(R.id.level_amount4);
+        levelShowView5 = (ImageView)findViewById(R.id.level_amount5);
+        levelShowView6 = (ImageView)findViewById(R.id.level_amount6);
+        levelShowView7 = (ImageView)findViewById(R.id.level_amount7);
+        levelShowView8 = (ImageView)findViewById(R.id.level_amount8);
+        levelShowView9 = (ImageView)findViewById(R.id.level_amount9);
+        levelShowView10 = (ImageView)findViewById(R.id.level_amount10);
+
+        levelShowView1.setVisibility(View.INVISIBLE);
+        levelShowView2.setVisibility(View.INVISIBLE);
+        levelShowView3.setVisibility(View.INVISIBLE);
+        levelShowView4.setVisibility(View.INVISIBLE);
+        levelShowView5.setVisibility(View.INVISIBLE);
+        levelShowView6.setVisibility(View.INVISIBLE);
+        levelShowView7.setVisibility(View.INVISIBLE);
+        levelShowView8.setVisibility(View.INVISIBLE);
+        levelShowView9.setVisibility(View.INVISIBLE);
+        levelShowView10.setVisibility(View.INVISIBLE);
+//        ======================================================================
         foodItem = (Button)findViewById(R.id.foodItem);
         handItem = (Button)findViewById(R.id.handItem);
         cleanItem = (Button)findViewById(R.id.cleanItem);
@@ -345,6 +386,7 @@ public class PetDefaultActivity extends AppCompatActivity {
 //        String levelNOW = (String)levelMap.get("levelNow");
         String levelNOW = (String)dataSnapshot.getValue();
         setlevelTake(Integer.parseInt(levelNOW));
+        levelTextView.setText(levelNOW);
 //        if(levelMap.get("levelMore")!=null) {
 //            String levelMORE = (String) levelMap.get("levelMore");
 //            levelAdd = Integer.parseInt(levelMORE);
@@ -411,40 +453,62 @@ public class PetDefaultActivity extends AppCompatActivity {
 //    ===================================================================================================================================
     private void setlevelTake(int Have){
         levelHave = Have;
+        if(levelHave >=10){
+            setImagePet(true);
+        }else{
+            setImagePet(false);
+        }
     }
     private  void setlevelTakeOut(int Add){
         levelAdd = Add;
+        levelViewShow();
     }
 //=================レベルアップ（現在レベル１０までしか上がりません）======================================================================
-    private void Levelmanagement() {
-        HashMap<String,String> levelHaveMap = new HashMap<String,String>();
-        if(levelAdd <=10) {
-            levelHave += 1;
-        }
-        levelHaveString = String.valueOf(levelHave);
-        levelHaveMap.put("levelNow",levelAddString);
-        levelRef.setValue(levelHaveMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if(databaseError != null){
-                    System.out.println("Data could not be saved"+ databaseError.getMessage());
-                }else{
-                    System.out.println("Data saved successfully");
-                }
-            }
-        });
-    }
+//    private void Levelmanagement() {
+//        HashMap<String,String> levelHaveMap = new HashMap<String,String>();
+//        if(levelAdd <=10) {
+//            levelHave += 1;
+//        }
+//        levelHaveString = String.valueOf(levelHave);
+//        levelHaveMap.put("levelNow",levelAddString);
+//        levelRef.setValue(levelHaveMap, new DatabaseReference.CompletionListener() {
+//            @Override
+//            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                if(databaseError != null){
+//                    System.out.println("Data could not be saved"+ databaseError.getMessage());
+//                }else{
+//                    System.out.println("Data saved successfully");
+//                }
+//            }
+//        });
+//    }
 //        ============================================================================================
+//    ============================どうぶつ画像入れ替え=====================================================================
+    private void setImagePet(boolean isImage){
+        if(isImage) {
+            petImage.setImageResource(R.drawable.hituzi);
+        }else{
+            petImage.setImageResource(R.drawable.pet);
+        }
+    }
+//    ===============================================================================================================================
 //    ====================レベル加算（１０を超えたらまた０からやり直す）================================================================================
     private void levelPlus(){
         HashMap<String,String> levelAddMap = new HashMap<String,String>();
         HashMap<String,String> levelInfoMap = new HashMap<String, String>();
         if(levelAdd<=9) {
             levelAdd += 1;
+            levelViewShow();
             levelInfoMap.put("levelNow","1");
         }else if(levelAdd == 10){
-            levelAdd = 0;
-            Levelmanagement();
+            levelAdd = 1;
+            levelViewShow();
+            if(levelHave <=10) {
+                levelHave += 1;
+                levelInfoMap.put("levelNow", String.valueOf(levelHave));
+                levelTextView.setText(String.valueOf(levelHave));
+//            Levelmanagement();
+            }
         }
         levelAddString = String.valueOf(levelAdd);
         levelAddMap.put("levelMore",levelAddString);
@@ -470,6 +534,87 @@ public class PetDefaultActivity extends AppCompatActivity {
         });
     }
 //    =============================================================================================================
+//    =======================レベル表示・非表示======================================================================
+    private void levelViewShow(){
+        if(levelAdd ==1){
+            levelShowView1.setVisibility(View.VISIBLE);
+//            ===================他の表示を切っておく===========================================================
+            levelShowView2.setVisibility(View.INVISIBLE);
+            levelShowView3.setVisibility(View.INVISIBLE);
+            levelShowView4.setVisibility(View.INVISIBLE);
+            levelShowView5.setVisibility(View.INVISIBLE);
+            levelShowView6.setVisibility(View.INVISIBLE);
+            levelShowView7.setVisibility(View.INVISIBLE);
+            levelShowView8.setVisibility(View.INVISIBLE);
+            levelShowView9.setVisibility(View.INVISIBLE);
+            levelShowView10.setVisibility(View.INVISIBLE);
+//            ============================================================================================================
+        }else if(levelAdd==2){
+            levelShowView1.setVisibility(View.VISIBLE);
+            levelShowView2.setVisibility(View.VISIBLE);
+        }else if(levelAdd==3){
+            levelShowView1.setVisibility(View.VISIBLE);
+            levelShowView2.setVisibility(View.VISIBLE);
+            levelShowView3.setVisibility(View.VISIBLE);
+        }else if(levelAdd==4){
+            levelShowView1.setVisibility(View.VISIBLE);
+            levelShowView2.setVisibility(View.VISIBLE);
+            levelShowView3.setVisibility(View.VISIBLE);
+            levelShowView4.setVisibility(View.VISIBLE);
+        }else if(levelAdd==5){
+            levelShowView1.setVisibility(View.VISIBLE);
+            levelShowView2.setVisibility(View.VISIBLE);
+            levelShowView3.setVisibility(View.VISIBLE);
+            levelShowView4.setVisibility(View.VISIBLE);
+            levelShowView5.setVisibility(View.VISIBLE);
+        }else if(levelAdd==6){
+            levelShowView1.setVisibility(View.VISIBLE);
+            levelShowView2.setVisibility(View.VISIBLE);
+            levelShowView3.setVisibility(View.VISIBLE);
+            levelShowView4.setVisibility(View.VISIBLE);
+            levelShowView5.setVisibility(View.VISIBLE);
+            levelShowView6.setVisibility(View.VISIBLE);
+        }else if(levelAdd==7){
+            levelShowView1.setVisibility(View.VISIBLE);
+            levelShowView2.setVisibility(View.VISIBLE);
+            levelShowView3.setVisibility(View.VISIBLE);
+            levelShowView4.setVisibility(View.VISIBLE);
+            levelShowView5.setVisibility(View.VISIBLE);
+            levelShowView6.setVisibility(View.VISIBLE);
+            levelShowView7.setVisibility(View.VISIBLE);
+        }else if(levelAdd==8){
+            levelShowView1.setVisibility(View.VISIBLE);
+            levelShowView2.setVisibility(View.VISIBLE);
+            levelShowView3.setVisibility(View.VISIBLE);
+            levelShowView4.setVisibility(View.VISIBLE);
+            levelShowView5.setVisibility(View.VISIBLE);
+            levelShowView6.setVisibility(View.VISIBLE);
+            levelShowView7.setVisibility(View.VISIBLE);
+            levelShowView8.setVisibility(View.VISIBLE);
+        }else if(levelAdd==9){
+            levelShowView1.setVisibility(View.VISIBLE);
+            levelShowView2.setVisibility(View.VISIBLE);
+            levelShowView3.setVisibility(View.VISIBLE);
+            levelShowView4.setVisibility(View.VISIBLE);
+            levelShowView5.setVisibility(View.VISIBLE);
+            levelShowView6.setVisibility(View.VISIBLE);
+            levelShowView7.setVisibility(View.VISIBLE);
+            levelShowView8.setVisibility(View.VISIBLE);
+            levelShowView9.setVisibility(View.VISIBLE);
+        }else if(levelAdd==10){
+            levelShowView1.setVisibility(View.VISIBLE);
+            levelShowView2.setVisibility(View.VISIBLE);
+            levelShowView3.setVisibility(View.VISIBLE);
+            levelShowView4.setVisibility(View.VISIBLE);
+            levelShowView5.setVisibility(View.VISIBLE);
+            levelShowView6.setVisibility(View.VISIBLE);
+            levelShowView7.setVisibility(View.VISIBLE);
+            levelShowView8.setVisibility(View.VISIBLE);
+            levelShowView9.setVisibility(View.VISIBLE);
+            levelShowView10.setVisibility(View.VISIBLE);
+        }
+    }
+//    ================================================================================================================
     //    ==============ウンチを何個削除した確認、４つ消したらトイレ呼び出し========================================
     private void setroopCount(int count){
         mCount = count;
@@ -564,6 +709,7 @@ public class PetDefaultActivity extends AppCompatActivity {
     //  ~~~~~~~~~~~~~~~~~~~~~~犬のデフォルトアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void petDefaultAnime(){
         petImage = (ImageView) findViewById(R.id.petViewImage);
+
         petImage.setVisibility(View.VISIBLE);
         TranslateAnimation petMoveRight = new TranslateAnimation(
                 TranslateAnimation.RELATIVE_TO_SELF, -1,
@@ -575,7 +721,6 @@ public class PetDefaultActivity extends AppCompatActivity {
         petMoveRight.setRepeatMode(Animation.REVERSE);
         petMoveRight.setRepeatCount(Animation.INFINITE);
         petImage.startAnimation(petMoveRight);
-//        petAnimeRun();
     }
     private void dogDefaultDelete(){
         petImage = (ImageView) findViewById(R.id.petViewImage);
@@ -588,7 +733,7 @@ public class PetDefaultActivity extends AppCompatActivity {
         petMoveRight.setDuration(0);
         petMoveRight.setRepeatMode(0);
         petMoveRight.setRepeatCount(0);
-        petImage.startAnimation(petMoveRight);
+       petImage.startAnimation(petMoveRight);
         petImage.setVisibility(View.INVISIBLE);
     }
 
