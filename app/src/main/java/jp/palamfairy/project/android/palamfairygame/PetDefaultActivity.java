@@ -1,5 +1,6 @@
 package jp.palamfairy.project.android.palamfairygame;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -131,6 +132,8 @@ public class PetDefaultActivity extends AppCompatActivity {
     private MediaPlayer PlusLevelPlayer;
     private MediaPlayer TransPlayer;
     private Button transReturnButton;
+    private AlertDialog.Builder levelTenDialog;
+    private boolean IsMusicPlay;
     //    Handler mhandler= new Handler();
     private int random;
     @Override
@@ -177,7 +180,7 @@ public class PetDefaultActivity extends AppCompatActivity {
         cleanUntiC.setVisibility(View.INVISIBLE);
         cleanUntiD.setVisibility(View.INVISIBLE);
 //============================================================================
-
+        IsMusicPlay = true;
         toileRoop = new ToileRoop();
 //==================レベルビュー===============================================
         transIsOk = false;
@@ -190,6 +193,8 @@ public class PetDefaultActivity extends AppCompatActivity {
         plusVewImage.setVisibility(View.INVISIBLE);
         transReturnButton = (Button)findViewById(R.id.transItemBt);
         transReturnButton.setVisibility(View.INVISIBLE);
+        levelHave = 1;
+        levelTextView.setText("1");
 
 
         levelShowView1 = (ImageView)findViewById(R.id.level_amount1);
@@ -270,11 +275,18 @@ public class PetDefaultActivity extends AppCompatActivity {
                         levelPlus();
                     }
                 });
+                setShowItem(false);
+                foodItem.setVisibility(View.INVISIBLE);
+                handItem.setVisibility(View.INVISIBLE);
+                cleanItem.setVisibility(View.INVISIBLE);
+                transItemButton.setVisibility(View.INVISIBLE);
+                transReturnButton.setVisibility(View.INVISIBLE);
             }
         });
 //        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //        ======================なでなでクリックイベント===================================================================
         petNadeView = (ImageView)findViewById(R.id.petHandSmile);
+
         petNadeView.setVisibility(View.INVISIBLE);
         handAnimeView = (ImageView)findViewById(R.id.handSlide);
         handAnimeView.setVisibility(View.INVISIBLE);
@@ -289,10 +301,33 @@ public class PetDefaultActivity extends AppCompatActivity {
                 dogDefaultDelete();
                 naderuAnime();
                 levelPlus();
+
+                setShowItem(false);
+                foodItem.setVisibility(View.INVISIBLE);
+                handItem.setVisibility(View.INVISIBLE);
+                cleanItem.setVisibility(View.INVISIBLE);
+                transItemButton.setVisibility(View.INVISIBLE);
+                transReturnButton.setVisibility(View.INVISIBLE);
             }
         });
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 //        ==========返信クリックイベント====================================================================================
+        transReturnButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                petImage.setImageResource(R.drawable.pet);
+                petDefaultAnime();
+                transIsOk = false;
+
+                petDefaultAnime();
+                transSound();
+                setShowItem(false);
+                foodItem.setVisibility(View.INVISIBLE);
+                handItem.setVisibility(View.INVISIBLE);
+                cleanItem.setVisibility(View.INVISIBLE);
+                transItemButton.setVisibility(View.INVISIBLE);
+                transReturnButton.setVisibility(View.INVISIBLE);
+            }
+        });
         transItemButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 if(transIsOk){
@@ -306,7 +341,12 @@ public class PetDefaultActivity extends AppCompatActivity {
                 }
                 petDefaultAnime();
                 transSound();
-
+                setShowItem(false);
+                foodItem.setVisibility(View.INVISIBLE);
+                handItem.setVisibility(View.INVISIBLE);
+                cleanItem.setVisibility(View.INVISIBLE);
+                transItemButton.setVisibility(View.INVISIBLE);
+                transReturnButton.setVisibility(View.INVISIBLE);
             }
         });
 //        ===================================================================================================================
@@ -322,6 +362,13 @@ public class PetDefaultActivity extends AppCompatActivity {
 //                petImage.setVisibility(View.INVISIBLE);
                 dogSmile();
                 levelPlus();
+                setShowItem(false);
+                foodItem.setVisibility(View.INVISIBLE);
+                handItem.setVisibility(View.INVISIBLE);
+                cleanItem.setVisibility(View.INVISIBLE);
+                transItemButton.setVisibility(View.INVISIBLE);
+                transReturnButton.setVisibility(View.INVISIBLE);
+
             }
         });
 //        =================================================================================================================
@@ -338,6 +385,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                     cleanItem.setVisibility(View.INVISIBLE);
                     if(levelHave >=10) {
                         transItemButton.setVisibility(View.INVISIBLE);
+                        transReturnButton.setVisibility(View.INVISIBLE);
                     }
                     setShowItem(false);
                 }else{
@@ -402,11 +450,14 @@ public class PetDefaultActivity extends AppCompatActivity {
                 String.format("%s をなでなでして～～",petName),
                 "おはよう！今日はどんなことがあったかな？" ,
                 "何か楽しいことあった？？",
-                String.format("%s だいすき＞＜",userName)
+                String.format("%s だいすき＞＜",userName),
+                "お昼寝すると気持ちいいよ",
+                "ごはんがたべたい、ごはんがたべたい",
+                String.format("いやなことがあったら %s のカオを見て元気だして",petName),
+                String.format("%s がウンチをしたらキレイキレイにしてね！",petName)
         };
         CommentOut();
 //        ====================================================================================
-
     }
 //    ================R.menu.logout_menu表示==========================================================================
     @Override
@@ -507,9 +558,13 @@ public class PetDefaultActivity extends AppCompatActivity {
     };
 //    ===================================================================================================================================
     private void setlevelTake(int Have){
-        levelHave = Have;
+        if(Have ==0){
+            levelHave = 1;
+        }else {
+            levelHave = Have;
+        }
         String levelHaveString = String.valueOf(levelHave);
-        levelTextView.setText(levelHaveString);
+            levelTextView.setText(levelHaveString);
 //        if(levelHave >=10){
 //            setImagePet(true);
 //        }else{
@@ -554,18 +609,26 @@ public class PetDefaultActivity extends AppCompatActivity {
         if(levelAdd<=9) {
             levelAdd += 1;
             levelViewShow();
-            levelInfoMap.put("levelNow","1");
+            String levelHaveString = String.valueOf(levelHave);
+            levelInfoMap.put("levelNow",levelHaveString);
             levelAddAnime();
         }else if(levelAdd == 10){
             levelAdd = 1;
             levelViewShow();
-            if(levelHave <=10) {
+//            if(levelHave <=10) {
                 levelHave += 1;
+                if(levelHave == 10){
+                    levelTenDialog = new AlertDialog.Builder(this);
+                    levelTenDialog.setTitle("レベル１０に到達");
+                    levelTenDialog.setMessage("メニュー→「へんしん」が使えるようになりました");
+                    levelTenDialog.setPositiveButton("Ok",null);
+                    levelTenDialog.show();
+                }
                 levelInfoMap.put("levelNow", String.valueOf(levelHave));
                 levelTextView.setText(String.valueOf(levelHave));
                 levelUPAnime();
 //            Levelmanagement();
-            }
+//            }
         }
         levelAddString = String.valueOf(levelAdd);
         levelAddMap.put("levelMore",levelAddString);
@@ -773,7 +836,9 @@ public class PetDefaultActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                commentSound();
+                if(IsMusicPlay ==true) {
+                    commentSound();
+                }
                 commentAlphaAnimation = new AlphaAnimation(1,0);
                 commentAlphaAnimation.setDuration(3000);
                 commentText.startAnimation(commentAlphaAnimation);
@@ -887,9 +952,10 @@ public class PetDefaultActivity extends AppCompatActivity {
 //    ============================================================================================================
 //====================intentの際にすべてのプレイヤーを止める=====================================================
     private void mediaPlayerStop(){
-        commentPlayer.stop();
-        mOnara.stop();
-        mBgm.stop();
+            commentPlayer.stop();
+            mOnara.stop();
+            mBgm.stop();
+            IsMusicPlay = false;
     }
 //    ========================================================================================================
     //    ★
@@ -902,16 +968,24 @@ public class PetDefaultActivity extends AppCompatActivity {
                 Log.d("hatena","実験");
 //                トイレを4回呼びたい。
                 if(toileRoop.roop == 1){
-                    toileSound();
+                    if(IsMusicPlay ==true) {
+                        toileSound();
+                    }
                     toileA.setVisibility(View.VISIBLE);
                 }else if(toileRoop.roop == 2){
-                    toileSound();
+                    if(IsMusicPlay == true){
+                        toileSound();
+                    }
                     toileB.setVisibility(View.VISIBLE);
                 }else if(toileRoop.roop == 3){
-                    toileSound();
+                    if(IsMusicPlay == true) {
+                        toileSound();
+                    }
                     toileC.setVisibility(View.VISIBLE);
                 }else if(toileRoop.roop == 4){
-                    toileSound();
+                    if(IsMusicPlay==true) {
+                        toileSound();
+                    }
                     toileD.setVisibility(View.VISIBLE);
                 }
 

@@ -32,7 +32,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="37dp"
-        app:srcCompat="@drawable/pet_smile" />
+         />
+    <!--app:srcCompat="@drawable/pet_smile"-->
 
     <ImageView
         android:id="@+id/cleanGoodsA"
@@ -163,9 +164,10 @@
     <TextView
         android:id="@+id/commentTEX"
         android:layout_width="250dp"
-        android:layout_height="80dp"
-        android:layout_above="@+id/cleanGoodsC"
+        android:layout_height="85dp"
         android:layout_alignStart="@+id/toileB"
+        android:layout_alignTop="@+id/commentBG"
+        android:layout_marginTop="42dp"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -192,7 +194,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:text="TextView"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
@@ -292,7 +293,7 @@
         android:id="@+id/levelUP"
         android:layout_width="250dp"
         android:layout_height="100dp"
-        android:layout_above="@+id/petViewImage"
+        android:layout_alignTop="@+id/cleanGoodsC"
         android:layout_toEndOf="@+id/toileD"
         app:srcCompat="@drawable/level_up" />
 
@@ -300,8 +301,8 @@
         android:id="@+id/plus"
         android:layout_width="100dp"
         android:layout_height="60dp"
-        android:layout_below="@+id/commentTEX"
-        android:layout_toEndOf="@+id/cleanGoodsD"
+        android:layout_alignTop="@+id/cleanGoodsC"
+        android:layout_toEndOf="@+id/toileB"
         app:srcCompat="@drawable/plus" />
 
     <Button

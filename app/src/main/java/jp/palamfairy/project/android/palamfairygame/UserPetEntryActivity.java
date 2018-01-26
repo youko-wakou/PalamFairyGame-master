@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -47,12 +48,14 @@ public class UserPetEntryActivity extends AppCompatActivity {
     private ProgressDialog userEntryProgress;
     private MediaPlayer JumpPlayer;
     private Intent EntryToStartIntent;
+    private boolean IsMusicTrue;
 
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_pet_entry);
         setTitle("スタート");
+        IsMusicTrue = true;
 //========================ユーザー情報取得======================================================================
         auth= FirebaseAuth.getInstance();
         databasereference = FirebaseDatabase.getInstance().getReference();
@@ -99,7 +102,7 @@ public class UserPetEntryActivity extends AppCompatActivity {
                     });
                     EntryToStartIntent = new Intent(getApplicationContext(),MainActivity.class);
                     startActivity(EntryToStartIntent);
-
+                    soundStop();
                     userEntryProgress.show();
 //                    ===================================================================================================
                 }else if(userName.length()==0){
@@ -126,7 +129,9 @@ public class UserPetEntryActivity extends AppCompatActivity {
         dogJumpTransAnime.setRepeatMode(TranslateAnimation.RESTART);
         dogJumpTransAnime.setRepeatCount(TranslateAnimation.INFINITE);
         dogJumpAnimeView.startAnimation(dogJumpTransAnime);
-        jumpSound();
+        if(IsMusicTrue) {
+            jumpSound();
+        }
     }
 //    ====================================================================================================
 //        ==============================BGMの設定===============================================================
@@ -139,9 +144,25 @@ public class UserPetEntryActivity extends AppCompatActivity {
 //===============================================================================================================
 //=========ジャンプサウンド==========================================================================
     private void jumpSound(){
-        JumpPlayer = MediaPlayer.create(this,R.raw.jump);
-        JumpPlayer.setLooping(true);
-        JumpPlayer.start();
+        new Handler().postDelayed(new Runnable(){
+            @Override
+            public void run(){
+                JumpPlayer = MediaPlayer.create(getApplicationContext(),R.raw.jump);
+//                JumpPlayer.setLooping(true);
+                JumpPlayer.start();
+                jumpSound();
+            }
+        },2000);
+
     }
 //    ===========================================================================================
+//    ======================インテントプレイヤー停止==============================================
+    private void soundStop(){
+//        if(JumpPlayer.isPlaying()||entryBgmPlayer.isPlaying()) {
+            JumpPlayer.stop();
+            entryBgmPlayer.stop();
+            IsMusicTrue = false;
+//        }
+    }
+//    =============================================================================================
 }

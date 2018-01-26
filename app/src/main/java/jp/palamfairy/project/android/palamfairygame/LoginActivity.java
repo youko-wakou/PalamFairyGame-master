@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     private ArrayList<String> userInfoList;
     private ArrayList<String> passArrayUserInfo;
     private Intent NextPetInfoIntent;
+    private Intent LoginIntent;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +103,9 @@ public class LoginActivity extends AppCompatActivity {
 //                        loginProgressDialog.dismiss();
                     }else{
 //                        =================アカウント作成済みだった場合firebaseからユーザー情報を引き出す================================
+                        LoginIntent = new Intent(getApplicationContext(),MainActivity.class);
+                        startActivity(LoginIntent);
+
 //                        ============================================================================================================
                     }
                 }else{
@@ -111,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
-        setTitle("ログイン");
+        setTitle("ログイン/アカウント作成");
 //        ==================-プログレスダイアログ作成=====================================================
         loginProgressDialog = new ProgressDialog(this);
         loginProgressDialog.setMessage("ログイン処理中…");
@@ -129,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                 password = passwordEdit.getText().toString();
 //                ========================================================================================================================
 //                ================================メールが未入力でない、パスワードが6文字以上=======================================================
-                if(email.length()!=0&&password.length()>=6){
+                if(email.length()!=0||password.length()>=6){
 //                    ======================無事ユーザーパスワードとメールアドレスが登録できた場合============================
 //                    ★ここでIntentに渡すためにemailとpasswordを取得する★
                     setUserInfo(email,password);
@@ -153,7 +157,10 @@ public class LoginActivity extends AppCompatActivity {
                 keyBoardShow = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 keyBoardShow.hideSoftInputFromWindow(v.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
 
-                if(email.length() !=0 && password.length()>=6){
+                email = emailEdit.getText().toString();
+                password = passwordEdit.getText().toString();
+
+                if(email.length() !=0 || password.length()>=6){
                     isCreateAccount = false;
                     login(email,password);
                 }else if(email.length()<6){
@@ -170,11 +177,16 @@ public class LoginActivity extends AppCompatActivity {
     private void createAccount(String email,String password){
         loginProgressDialog.show();
         firebaseauth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(AccountListener);
+        passArrayUserInfo = passUserInfoArray();
+//        NextPetInfoIntent = new Intent(getApplicationContext(),UserPetEntryActivity.class);
+//        NextPetInfoIntent.putExtra("userProfArray",passArrayUserInfo);
+//        startActivity(NextPetInfoIntent);
     }
 //    =================ログインメソッド=====================================================================
     private void login(String email,String password){
         loginProgressDialog.show();
         firebaseauth.signInWithEmailAndPassword(email,password).addOnCompleteListener(LoginListener);
+
     }
 //    ========================================================================================================
 //    =======================ここでサインアップの時に取得できるemailとpasswordをintentに渡すために保管する=================================
