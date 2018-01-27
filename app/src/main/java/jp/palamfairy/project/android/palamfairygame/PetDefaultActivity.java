@@ -832,7 +832,7 @@ public class PetDefaultActivity extends AppCompatActivity {
         talkString = talkText[SelectTalk];
         commentText.setText(talkString);
         randOutTalk = new Random();
-        randOutCount = randOutTalk.nextInt(300000)+1000;
+        randOutCount = randOutTalk.nextInt(30000)+1000;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -845,7 +845,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                 commentBackView.startAnimation(commentAlphaAnimation);
                 CommentOut();
             }
-        },3000);
+        },randOutCount);
     }
 //    =============================================================================================
 //  ~~~~~~~~~~~~~~~~~~~~~~犬のデフォルトアニメーション~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -964,7 +964,7 @@ public class PetDefaultActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Random randomInt = new Random();
-                random = randomInt.nextInt(600000)+60000;
+                random = randomInt.nextInt(60000)+1000;
                 Log.d("hatena","実験");
 //                トイレを4回呼びたい。
                 if(toileRoop.roop == 1){
@@ -1006,6 +1006,6 @@ public class PetDefaultActivity extends AppCompatActivity {
                 }
 
             }
-        },3000);
+        },random);
     }
 }
