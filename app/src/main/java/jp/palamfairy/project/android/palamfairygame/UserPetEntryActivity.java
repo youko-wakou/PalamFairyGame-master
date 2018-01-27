@@ -150,7 +150,9 @@ public class UserPetEntryActivity extends AppCompatActivity {
                 JumpPlayer = MediaPlayer.create(getApplicationContext(),R.raw.jump);
 //                JumpPlayer.setLooping(true);
                 JumpPlayer.start();
-                jumpSound();
+                if(IsMusicTrue) {
+                    jumpSound();
+                }
             }
         },2000);
 

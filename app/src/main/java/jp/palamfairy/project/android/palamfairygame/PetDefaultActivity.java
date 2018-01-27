@@ -952,8 +952,8 @@ public class PetDefaultActivity extends AppCompatActivity {
 //    ============================================================================================================
 //====================intentの際にすべてのプレイヤーを止める=====================================================
     private void mediaPlayerStop(){
-            commentPlayer.stop();
-            mOnara.stop();
+//            commentPlayer.stop();
+//            mOnara.stop();
             mBgm.stop();
             IsMusicPlay = false;
     }
