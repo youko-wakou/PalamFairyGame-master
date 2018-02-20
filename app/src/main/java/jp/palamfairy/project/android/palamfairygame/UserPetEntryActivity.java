@@ -139,7 +139,7 @@ public class UserPetEntryActivity extends AppCompatActivity {
         entryBgmPlayer = MediaPlayer.create(this,R.raw.entry);
         entryBgmPlayer.setLooping(true);
         entryBgmPlayer.setVolume(0.3f,0.3f);
-        entryBgmPlayer.start();
+//        entryBgmPlayer.start();
     }
 //===============================================================================================================
 //=========ジャンプサウンド==========================================================================
@@ -161,10 +161,31 @@ public class UserPetEntryActivity extends AppCompatActivity {
 //    ======================インテントプレイヤー停止==============================================
     private void soundStop(){
 //        if(JumpPlayer.isPlaying()||entryBgmPlayer.isPlaying()) {
-            JumpPlayer.stop();
+//            JumpPlayer.stop();
             entryBgmPlayer.stop();
             IsMusicTrue = false;
 //        }
     }
 //    =============================================================================================
+//    ===================アプリを閉じるときの音楽の再生・一時停止===========================================
+    @Override
+    protected void onResume(){
+        super.onResume();
+        entryBgmPlayer.start();
+        IsMusicTrue = true;
+        jumpSound();
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        entryBgmPlayer.pause();
+        IsMusicTrue = false;
+    }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        entryBgmPlayer.release();
+        entryBgmPlayer = null;
+    }
+//    ===========================================================================================================
 }

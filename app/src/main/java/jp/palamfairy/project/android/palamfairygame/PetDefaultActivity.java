@@ -1,6 +1,8 @@
 package jp.palamfairy.project.android.palamfairygame;
 
 import android.app.AlertDialog;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -24,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -42,6 +45,7 @@ import java.util.Random;
  */
 
 public class PetDefaultActivity extends AppCompatActivity {
+    private AdView mAdView;
     private MediaPlayer mBgm;
     private MediaPlayer mOnara;
     private ImageView petImage;
@@ -72,6 +76,7 @@ public class PetDefaultActivity extends AppCompatActivity {
     private Button toileC;
     private Button toileD;
     private int mCount;
+    private int count;
     private int removeCount;
     private ArrayList<Integer> ToileRoopList;
     private ImageView OnigiriView;
@@ -180,6 +185,7 @@ public class PetDefaultActivity extends AppCompatActivity {
         cleanUntiC.setVisibility(View.INVISIBLE);
         cleanUntiD.setVisibility(View.INVISIBLE);
 //============================================================================
+        count = 0;
         IsMusicPlay = true;
         toileRoop = new ToileRoop();
 //==================レベルビュー===============================================
@@ -244,7 +250,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                     public void onClick(View v){
                         toileA.setVisibility(View.INVISIBLE);
                         cleanToile(cleanUntiA);
-                        setroopCount(1);
+                        setroopCount();
                         levelPlus();
                     }
                 });
@@ -253,7 +259,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         toileB.setVisibility(View.INVISIBLE);
                         cleanToile(cleanUntiB);
-                        setroopCount(1);
+                        setroopCount();
                         levelPlus();
                     }
                 });
@@ -262,7 +268,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                     public void onClick(View v){
                         toileC.setVisibility(View.INVISIBLE);
                         cleanToile(cleanUntiC);
-                        setroopCount(1);
+                        setroopCount();
                         levelPlus();
                     }
                 });
@@ -271,7 +277,7 @@ public class PetDefaultActivity extends AppCompatActivity {
                     public void onClick(View v){
                         toileD.setVisibility(View.INVISIBLE);
                         cleanToile(cleanUntiD);
-                        setroopCount(1);
+                        setroopCount();
                         levelPlus();
                     }
                 });
@@ -405,6 +411,9 @@ public class PetDefaultActivity extends AppCompatActivity {
                 }
             }
         });
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
     //    ==========================================================================================================
 //        ==========================表示名取得リスナーonCreateで呼び出し=================================================
@@ -736,16 +745,20 @@ public class PetDefaultActivity extends AppCompatActivity {
     }
 //    ================================================================================================================
 //    ==============ウンチを何個削除した確認、４つ消したらトイレ呼び出し========================================
-    private void setroopCount(int count){
-        mCount = count;
-        if(mCount!=0) {
+    private void setroopCount(){
+//        mCount = count;
+//        if(mCount!=0) {
 //            removeCount = getroopCount();
-            ToileRoopList.remove(mCount);
-            if(ToileRoopList.size() ==1){
-                ToileRoopList.remove(0);
+            mCount =ToileRoopList.size();
+            mCount = mCount -1;
+
+            if(mCount>=1) {
+                ToileRoopList.remove(mCount);
+            }else if(mCount ==0){
+                ToileRoopList.remove(mCount);
                 toile();
             }
-        }
+//        }
     }
 //    ==========================================================================================================
     private int getroopCount(){
@@ -900,7 +913,7 @@ public class PetDefaultActivity extends AppCompatActivity {
         mBgm = MediaPlayer.create(this, R.raw.bgm);
         mBgm.setLooping(true);
         mBgm.setVolume(0.3f,0.3f);
-        mBgm.start();
+//        mBgm.start();
     }
 //    ===========================================================================================================
 //    ====================================レベルアップサウンド===============================================
@@ -957,6 +970,24 @@ public class PetDefaultActivity extends AppCompatActivity {
             mBgm.stop();
             IsMusicPlay = false;
     }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        mBgm.start();
+        IsMusicPlay = true;
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        mBgm.pause();
+        IsMusicPlay = false;
+    }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        mBgm.release();
+        mBgm = null;
+    }
 //    ========================================================================================================
     //    ★
     private void toile(){
@@ -968,23 +999,55 @@ public class PetDefaultActivity extends AppCompatActivity {
                 Log.d("hatena","実験");
 //                トイレを4回呼びたい。
                 if(toileRoop.roop == 1){
-                    if(IsMusicPlay ==true) {
-                        toileSound();
+                    if(toileA.getVisibility() == View.INVISIBLE) {
+                        if (IsMusicPlay == true) {
+                            toileSound();
+                        }
+                    }
+                    int count =0;
+                    count +=1;
+                    ToileRoopList =toileRoop.getRoopList();
+                    if(toileRoop.roop !=0) {
+                        toileRoop.setRoopList(count);
                     }
                     toileA.setVisibility(View.VISIBLE);
                 }else if(toileRoop.roop == 2){
-                    if(IsMusicPlay == true){
-                        toileSound();
+                    if(toileB.getVisibility() == View.INVISIBLE) {
+                        if (IsMusicPlay == true) {
+                            toileSound();
+                        }
+                    }
+                    int count =0;
+                    count +=1;
+                    ToileRoopList =toileRoop.getRoopList();
+                    if(toileRoop.roop !=0) {
+                        toileRoop.setRoopList(count);
                     }
                     toileB.setVisibility(View.VISIBLE);
                 }else if(toileRoop.roop == 3){
-                    if(IsMusicPlay == true) {
-                        toileSound();
+                    if(toileC.getVisibility() == View.INVISIBLE) {
+                        if (IsMusicPlay == true) {
+                            toileSound();
+                        }
+                    }
+                    int count =0;
+                    count +=1;
+                    ToileRoopList =toileRoop.getRoopList();
+                    if(toileRoop.roop !=0) {
+                        toileRoop.setRoopList(count);
                     }
                     toileC.setVisibility(View.VISIBLE);
                 }else if(toileRoop.roop == 4){
-                    if(IsMusicPlay==true) {
-                        toileSound();
+                    if(toileD.getVisibility() == View.INVISIBLE) {
+                        if (IsMusicPlay == true) {
+                            toileSound();
+                        }
+                    }
+                    int count =0;
+                    count +=1;
+                    ToileRoopList =toileRoop.getRoopList();
+                    if(toileRoop.roop !=0) {
+                        toileRoop.setRoopList(count);
                     }
                     toileD.setVisibility(View.VISIBLE);
                 }
@@ -993,17 +1056,19 @@ public class PetDefaultActivity extends AppCompatActivity {
                 if(toileRoop.roop >4) {
                     toileRoop.roop = 0;
                 }
+                toile();
 
-                int count =0;
-                count +=1;
-                ToileRoopList =toileRoop.getRoopList();
-                if(toileRoop.roop !=0) {
-                    toileRoop.setRoopList(count);
-                }
+//                int count =0;
+//                count +=1;
+//                ToileRoopList =toileRoop.getRoopList();
+//                if(toileRoop.roop !=0) {
+//                    toileRoop.setRoopList(count);
+//                }
 
-                if(ToileRoopList.size() <=4){
-                    toile();
-                }
+//                if(ToileRoopList.size() <=4){
+
+//                    toile();
+//                }
 
             }
         },random);
